@@ -29,7 +29,7 @@ const controls = new PointerLockControls(camera, renderer.domElement);
 const wrapper = controls.getObject();
 scene.add(wrapper);
 
-// Clicking turns the view
+// Clicking the canvas allows the user to look around
 document.body.addEventListener('click', () => controls.lock());
 
 // Events for pressing wasd keys, basic control scheme
