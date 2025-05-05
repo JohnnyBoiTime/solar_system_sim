@@ -29,7 +29,7 @@ const controls = new PointerLockControls(camera, renderer.domElement);
 const wrapper = controls.getObject();
 scene.add(wrapper);
 
-// Clicking turns the view
+// Clicking the canvas allows the user to look around
 document.body.addEventListener('click', () => controls.lock());
 
 // Events for pressing wasd keys, basic control scheme
@@ -105,9 +105,9 @@ function animate() {
     // Get forward-facing vector from the wrappers orientation
     wrapper.getWorldDirection(forwardDirection);
 
-    // Get the right-facing vector from the wrappers orientation
-    // (upward, forward)
-    rightDirection.crossVectors(wrapper.up, forwardDirection).normalize();
+    // Cross product of the forward direction and the up vector gives us the right direction,
+    // Normalize the vector to make it a unit vector in the right direction
+    rightDirection.crossVectors(forwardDirection, wrapper.up).normalize();
 
     // controls to move the wrapper, changing view based on key presses,
     // updating the position based on the speed and delta time
@@ -119,10 +119,10 @@ function animate() {
         wrapper.position.addScaledVector(forwardDirection, -speed * delta);
     }
     if (moving.left) {
-        wrapper.position.addScaledVector(rightDirection, speed * delta);
+        wrapper.position.addScaledVector(rightDirection, -speed * delta);
     }
     if (moving.right) {
-        wrapper.position.addScaledVector(rightDirection, -speed * delta);
+        wrapper.position.addScaledVector(rightDirection, speed * delta);
     }
 
     // Rotate the cube 
