@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { createMercury } from './planets/mercury';
 import { PointerLockControls } from 'three/examples/jsm/controls/PointerLockControls.js';
 
 // Create the scene and the camera
@@ -22,6 +23,9 @@ const renderer = new THREE.WebGLRenderer({antialias: true});
 
 // Sets size of canvas and adds it to the window
 renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.outputEncoding = THREE.sRGBEncoding; 
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1; // Brightness of the scene
 document.body.appendChild(renderer.domElement);
 
 // Camera and its controls
@@ -89,27 +93,36 @@ const clock = new THREE.Clock(); // Measures time between frames
 const geometry = new THREE.BoxGeometry(); // data for a unit cube
 const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
 const cube = new THREE.Mesh(geometry, material); // Creates render
-scene.add(cube);
+scene.add(cube); 
 
-// Create a sphere to orbit the cube
-const sphere = new THREE.SphereGeometry(1, 16, 16);
-const sphereMaterial = new THREE.MeshBasicMaterial({ color: 0x0000ff });
-const sphereMesh = new THREE.Mesh(sphere, sphereMaterial);
-scene.add(sphereMesh);
+// Add mercury to scene
+const mercury = createMercury(); // Create mercury and add it to the scene
+mercury.position.set(10, 0, 0); 
 
 // Create the pivot point (the cube) to have the sphere orbit around
 const pivotPoint = new THREE.Object3D();
 
-// Center the pivot point on the cube
+// Center the pivot point on the cube sp mercury orbits around the cube
 pivotPoint.position.copy(cube.position);
 scene.add(pivotPoint);
 
 // Add sphere to the pivot point
-pivotPoint.add(sphereMesh);
+pivotPoint.add(mercury);
 
-// Set the sphere to orbit around the cube 10 units away
-// on x axis
-sphereMesh.position.set(10, 0, 0); 
+// Simulate sunlight form the cube
+const sunLight = new THREE.DirectionalLight(0xffffff, 2.5);
+sunLight.position.set(0.1,0.1,0.1); 
+cube.add(sunLight);
+scene.add(sunLight); 
+
+// Where to target the sunlight 
+const lightTargeter = new THREE.Object3D();
+
+// Make the light target the pivot point and offset it the same distance
+// as mercury
+pivotPoint.add(lightTargeter)
+lightTargeter.position.set(10, 0, 0);
+sunLight.target = lightTargeter;
 
 const orbitSpeed = 1.0; // rad/sec
 
