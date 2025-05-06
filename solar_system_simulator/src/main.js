@@ -29,7 +29,9 @@ const controls = new PointerLockControls(camera, renderer.domElement);
 const wrapper = controls.getObject();
 scene.add(wrapper);
 
-// Clicking the canvas allows the user to look around
+// Clicking the canvas allows the user to look around. When user clicks,
+// the cursor is hidden and the camera is locked to the canvas,
+// allowing the user to look around
 document.body.addEventListener('click', () => controls.lock());
 
 // Events for pressing wasd keys, basic control scheme
@@ -89,6 +91,27 @@ const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
 const cube = new THREE.Mesh(geometry, material); // Creates render
 scene.add(cube);
 
+// Create a sphere to orbit the cube
+const sphere = new THREE.SphereGeometry(1, 16, 16);
+const sphereMaterial = new THREE.MeshBasicMaterial({ color: 0x0000ff });
+const sphereMesh = new THREE.Mesh(sphere, sphereMaterial);
+scene.add(sphereMesh);
+
+// Create the pivot point (the cube) to have the sphere orbit around
+const pivotPoint = new THREE.Object3D();
+
+// Center the pivot point on the cube
+pivotPoint.position.copy(cube.position);
+scene.add(pivotPoint);
+
+// Add sphere to the pivot point
+pivotPoint.add(sphereMesh);
+
+// Set the sphere to orbit around the cube 10 units away
+// on x axis
+sphereMesh.position.set(10, 0, 0); 
+
+const orbitSpeed = 1.0; // rad/sec
 
 // Now to animate the cube
 function animate() {
@@ -128,6 +151,8 @@ function animate() {
     // Rotate the cube 
     cube.rotation.x += 0.01;
     cube.rotation.y += 0.01;
+
+    pivotPoint.rotation.y += orbitSpeed * delta; // Rotate the pivot point
 
     // Render via the camera's pOV
     renderer.render(scene, camera);
