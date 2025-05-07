@@ -9,7 +9,9 @@ create a background that is like the milky way galaxy
 Then:
 
 Make orbits mathematically accurate
+
 Make planets rotations be mathematically accurate
+
 Make the time it takes for the plaents to rotate around the sun mathematically accurate
 
 Fun to do's:
