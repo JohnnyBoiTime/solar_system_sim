@@ -3,6 +3,7 @@ import { createMercury } from './planets/mercury';
 import { createVenus } from './planets/venus';
 import { createEarth } from './planets/earth';
 import { createMars } from './planets/mars';
+import { createJupiter } from './planets/jupiter';
 import { PointerLockControls } from 'three/examples/jsm/controls/PointerLockControls.js';
 
 // Create the scene and the camera
@@ -111,6 +112,9 @@ earth.position.set(30, 0, 0);
 const mars = createMars(); // Create mars and add it to the scene
 mars.position.set(40, 0, 0);
 
+const jupiter = createJupiter(); // Create jupiter and add it to the scene
+jupiter.position.set(50, 0, 0); 
+
 // Create the pivot point (the cube) to have the sphere orbit around
 const pivotPoint = new THREE.Object3D();
 
@@ -118,11 +122,12 @@ const pivotPoint = new THREE.Object3D();
 pivotPoint.position.copy(cube.position);
 scene.add(pivotPoint);
 
-// Add sphere to the pivot point
+// Add all planets to the pivot point (sun)
 pivotPoint.add(mercury);
 pivotPoint.add(venus);
 pivotPoint.add(earth);
 pivotPoint.add(mars);
+pivotPoint.add(jupiter);
 
 // Simulate sunlight form the cube
 const sunLight = new THREE.DirectionalLight(0xffffff, 2.5);
