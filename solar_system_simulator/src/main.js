@@ -222,8 +222,8 @@ function animate() {
     jupiter.rotation.x += 0.01;
     jupiter.rotation.y += 0.01;
 
-    saturn.rotation.x += 0.01;
-    saturn.rotation.y += 0.01;
+    saturn.planet.rotation.x += 0.01;
+    saturn.planet.rotation.y += 0.01;
 
     uranus.rotation.x += 0.01;
     uranus.rotation.y += 0.01;

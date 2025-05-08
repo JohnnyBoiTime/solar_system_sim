@@ -1,29 +1,51 @@
 import * as THREE from 'three';
 import saturnTexture from '../textures/saturn.jpg';
+import ringTexture from '../textures/saturnRings.jpg';
 
 // Pretty self explanatory, this file creates saturn and adds it to the scene
 export function createSaturn() {
 
-    // Create sphere, material, and mesh for saturn
-    const saturn = new THREE.SphereGeometry(1, 32, 32);
-    
+    const saturn = new THREE.Group();
+
+    // Create sphere for the planet of saturn
+    const planet = new THREE.SphereGeometry(1, 32, 32);
 
     // Load JPG as a THREE texture to use
-    const loadTexture = new THREE.TextureLoader();
-    const texture = loadTexture.load(saturnTexture);
-    texture.encoding = THREE.sRGBEncoding; 
+    const loadPlanetTexture = new THREE.TextureLoader();
+    const planetTexture = loadPlanetTexture.load(saturnTexture);
+    planetTexture.encoding = THREE.sRGBEncoding; 
     
-    const material = new THREE.MeshStandardMaterial({
-        map: texture,
+    const sphereMaterial = new THREE.MeshStandardMaterial({
+        map: planetTexture,
         roughness: 0.6,
         metalness: 0.0,
     });
 
-    const saturnMesh = new THREE.Mesh(saturn, material);
+    const planetMesh = new THREE.Mesh(planet, sphereMaterial);
 
-    
+    const rings = new THREE.RingGeometry(1.2, 1.5, 32);
+
+    const loadRingTexture = new THREE.TextureLoader();
+    const ringsTexture = loadRingTexture.load(ringTexture);
+    ringsTexture.encoding = THREE.sRGBEncoding; 
+
+    const ringMaterial = new THREE.MeshStandardMaterial({
+        map: ringsTexture,
+        roughness: 0.6,
+        metalness: 0.0,
+    });
+
+    const ringMesh = new THREE.Mesh(rings, ringMaterial);
+    ringMesh.rotation.x = -Math.PI / 2; // Rotate the rings to be flat
+    ringMaterial.side = THREE.DoubleSide; // Make the rings visible from both sides
+
+    saturn.planet = planetMesh;
+
+    saturn.add(planetMesh);
+    saturn.add(ringMesh);
+
 
     // Return saturn mesh
-    return saturnMesh;
+    return saturn;
 };
 
