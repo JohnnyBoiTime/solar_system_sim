@@ -1,4 +1,6 @@
 import * as THREE from 'three';
+import { TextureLoader, EquirectangularReflectionMapping } from 'three';
+import galaxyTexture from './textures/MilkyWayGalaxy.jpg';
 import { createMercury } from './planets/mercury';
 import { createVenus } from './planets/venus';
 import { createEarth } from './planets/earth';
@@ -11,6 +13,12 @@ import { PointerLockControls } from 'three/examples/jsm/controls/PointerLockCont
 
 // Create the scene and the camera
 const scene = new THREE.Scene();
+
+// Add milky way galaxy background
+new TextureLoader().load(galaxyTexture, (texture) => {
+    texture.mapping = EquirectangularReflectionMapping;
+    scene.background = texture;
+});
 
 // FOV (degrees), aspect ratio, near and far clipping planes
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -32,7 +40,7 @@ const renderer = new THREE.WebGLRenderer({antialias: true});
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.outputEncoding = THREE.sRGBEncoding; 
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = 1; // Brightness of the scene
+renderer.toneMappingExposure = 0.25; // Brightness of the scene
 document.body.appendChild(renderer.domElement);
 
 // Camera and its controls
@@ -88,10 +96,13 @@ document.addEventListener('keyup', onKeyUp);
 // Add a grid to give depth to the scene and 
 // shows orientation of camera, 
 // helps with placement and stuff
+
 const axes = new THREE.AxesHelper(20); 
 scene.add(axes);
 const grid = new THREE.GridHelper(1000, 1000);
 scene.add(grid);
+
+
 
 // Tracks which direction the camera is moving/facing
 const moving = { backward: false, forward: false, left: false, right: false};
@@ -152,7 +163,7 @@ pivotPoint.add(neptune);
 
 // Simulate sunlight form the sun
 const sunLight = new THREE.DirectionalLight(0xffffff, 2.5);
-sunLight.position.set(0.1,0.1,0.1); 
+sunLight.position.set(0.0 ,0.0 ,0.0); 
 sun.add(sunLight);
 scene.add(sunLight); 
 
