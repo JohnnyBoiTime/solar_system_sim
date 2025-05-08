@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import veusTexture from '../textures/venus.jpg';
+import venusTexture from '../textures/venus.jpg';
 
 // Pretty self explanatory, this file creates venus and adds it to the scene
 export function createVenus() {
@@ -9,7 +9,7 @@ export function createVenus() {
     
     // Load JPG as a THREE texture to use
     const loadTexture = new THREE.TextureLoader();
-    const texture = loadTexture.load(veusTexture);
+    const texture = loadTexture.load(venusTexture);
     texture.encoding = THREE.sRGBEncoding; 
     
     const material = new THREE.MeshStandardMaterial({

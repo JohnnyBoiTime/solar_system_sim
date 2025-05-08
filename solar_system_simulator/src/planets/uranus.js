@@ -1,12 +1,12 @@
 import * as THREE from 'three';
-// import uranusTexture from '../textures/uranus.jpg';
+import uranusTexture from '../textures/uranus.jpg';
 
 // Pretty self explanatory, this file creates uranus and adds it to the scene
 export function createUranus() {
 
     // Create sphere, material, and mesh for uranus
     const uranus = new THREE.SphereGeometry(1, 32, 32);
-    /*
+    
     // Load JPG as a THREE texture to use
     const loadTexture = new THREE.TextureLoader();
     const texture = loadTexture.load(uranusTexture);
@@ -18,11 +18,7 @@ export function createUranus() {
         metalness: 0.0,
     });
 
-    */
-    const uranusMesh = new THREE.Mesh(uranus);
-
-    
-
+    const uranusMesh = new THREE.Mesh(uranus, material);
     // Return uranus mesh
     return uranusMesh;
 };

@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-// import neptuneTexture from '../textures/neptune.jpg';
+import neptuneTexture from '../textures/neptune.jpg';
 
 // Pretty self explanatory, this file creates neptune and adds it to the scene
 export function createNeptune() {
@@ -8,7 +8,6 @@ export function createNeptune() {
     const neptune = new THREE.SphereGeometry(1, 32, 32);
     
 
-    /*
     // Load JPG as a THREE texture to use
     const loadTexture = new THREE.TextureLoader();
     const texture = loadTexture.load(neptuneTexture);
@@ -20,8 +19,7 @@ export function createNeptune() {
         metalness: 0.0,
     });
 
-    */
-    const neptuneMesh = new THREE.Mesh(neptune);
+    const neptuneMesh = new THREE.Mesh(neptune, material);
 
     // Return neptune mesh
     return neptuneMesh;
