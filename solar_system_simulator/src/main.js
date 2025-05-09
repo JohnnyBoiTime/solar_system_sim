@@ -167,6 +167,8 @@ sunLight.position.set(0, 0, 0);
 const orbitsOfPlanets = Object.entries(planets).map(([planet, mesh]) => {
     const distance = distanceFromSun[planet];
     const speed = orbitalSpeedOfPlanets[planet];
+
+    // Randomize the starting positions of the planets
     const startingPosition = Math.random() * Math.PI * 2;
     mesh.position.set(distance * Math.cos(startingPosition), 0, distance * Math.sin(startingPosition)); 
 
