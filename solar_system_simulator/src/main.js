@@ -115,68 +115,73 @@ const sun = new THREE.Mesh(geometry, material); // Creates render
 sun.scale.set(10, 10, 10);
 scene.add(sun); 
 
-// Add planets 
-const mercury = createMercury(); 
-mercury.position.set(20, 0, 0); 
+// Planets
+const planets = {
+    mercury: createMercury(),
+    venus: createVenus(),
+    earth: createEarth(),
+    mars: createMars(),
+    jupiter: createJupiter(),
+    saturn: createSaturn(),
+    uranus: createUranus(),
+    neptune: createNeptune()
+};
 
-const venus = createVenus(); 
-venus.position.set(30, 0, 0);
+// Distance of planets from sun
+const distanceFromSun = {
+    mercury: 20,
+    venus: 30,
+    earth: 40,
+    mars: 50,
+    jupiter: 60,
+    saturn: 70,
+    uranus: 80,
+    neptune: 90
+};
 
-// 1 AU will be 40 away from the sun to set the scale
-// OR 30 squares from edge of sun (position of earth relative to the sun).
-// Make sure to scale everything mathematically so the planets are close together,
-// So size the sun a good amount and size the planets to be accurate to that as well. 
-const earth = createEarth(); 
-earth.position.set(40, 0, 0);
+// Speed of each planet is relative to earths speed (3 sig figs).
+// Formula: speed of planet / speed of earth
+const orbitalSpeedOfPlanets = {
+    mercury: 1.99,
+    venus: 1.18,
+    earth: 1,
+    mars: 0.81,
+    jupiter: 0.44,
+    saturn: 0.33,
+    uranus: 0.22,
+    neptune: 0.18
+}
 
-const mars = createMars(); 
-mars.position.set(50, 0, 0);
-
-const jupiter = createJupiter(); 
-jupiter.position.set(60, 0, 0); 
-
-const saturn = createSaturn();
-saturn.position.set(70, 0, 0);
-
-const uranus = createUranus();
-uranus.position.set(80, 0, 0);
-
-const neptune = createNeptune();
-neptune.position.set(90, 0, 0);
-
-// Create the pivot point (the sun) to have the sphere orbit around
-const pivotPoint = new THREE.Object3D();
-
-// Center the pivot point on the sun sp mercury orbits around the sun
-pivotPoint.position.copy(sun.position);
-scene.add(pivotPoint);
-
-// Add all planets to the pivot point (sun)
-pivotPoint.add(mercury);
-pivotPoint.add(venus);
-pivotPoint.add(earth);
-pivotPoint.add(mars);
-pivotPoint.add(jupiter);
-pivotPoint.add(saturn);
-pivotPoint.add(uranus);
-pivotPoint.add(neptune);
-
-// Simulate sunlight form the sun
-const sunLight = new THREE.DirectionalLight(0xffffff, 2.5);
-sunLight.position.set(0.0 ,0.0 ,0.0); 
+// Sunlight!
+const sunLight = new THREE.PointLight(0xffffff, 4, 200, 0);
+ 
 sun.add(sunLight);
-scene.add(sunLight); 
+sunLight.position.set(0, 0, 0);
 
-// Where to target the sunlight 
-const lightTargeter = new THREE.Object3D();
+ Object.values(planets).forEach((planet) => {
+    planet.castShadow = true; // Allow planets to cast shadows
+    planet.receiveShadow = true; // Allow planets to receive shadows
+ });
 
-// Make the light target the pivot point and offset it the same distance
-// as mercury
-pivotPoint.add(lightTargeter)
-lightTargeter.position.set(10, 0, 0);
-sunLight.target = lightTargeter;
+ // Create the orbits of the planets and add them to the scene
+const orbitsOfPlanets = Object.entries(planets).map(([planet, mesh]) => {
+    const distance = distanceFromSun[planet];
+    const speed = orbitalSpeedOfPlanets[planet];
+    const startingPosition = Math.random() * Math.PI * 2;
+    mesh.position.set(distance * Math.cos(startingPosition), 0, distance * Math.sin(startingPosition)); 
 
-const orbitSpeed = 1.0; // rad/sec
+    // Create the pivot point (the sun) to have the sphere orbit around
+    const pivotPoint = new THREE.Object3D();
+
+    // Center the pivot point on the sun sp mercury orbits around the sun
+    pivotPoint.position.copy(sun.position);
+    scene.add(pivotPoint);
+
+    pivotPoint.add(mesh); 
+
+    return {pivotPoint, speed};
+
+});
 
 // Now to animate the sun
 function animate() {
@@ -213,10 +218,15 @@ function animate() {
         wrapper.position.addScaledVector(rightDirection, speed * delta);
     }
 
+    orbitsOfPlanets.forEach(({pivotPoint, speed}) => {
+        pivotPoint.rotation.y += speed * delta;
+    });
+
     // Rotate the sun 
     sun.rotation.x += 0.01;
     sun.rotation.y += 0.01;
 
+    /*
     // Rotate the planets, find a way to get the rotations right later on
     earth.rotation.x += 0.01;
     earth.rotation.y += 0.01;
@@ -244,6 +254,7 @@ function animate() {
 
     pivotPoint.rotation.y += orbitSpeed * delta; // Rotate the pivot point
 
+    */
     // Render via the camera's pOV
     renderer.render(scene, camera);
 

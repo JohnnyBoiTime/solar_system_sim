@@ -13,7 +13,7 @@ export function createSaturn() {
     // Load JPG as a THREE texture to use
     const loadPlanetTexture = new THREE.TextureLoader();
     const planetTexture = loadPlanetTexture.load(saturnTexture);
-    planetTexture.encoding = THREE.sRGBEncoding; 
+    planetTexture.colorSpace = THREE.SRGBColorSpace; 
     
     const sphereMaterial = new THREE.MeshStandardMaterial({
         map: planetTexture,
@@ -27,7 +27,7 @@ export function createSaturn() {
 
     const loadRingTexture = new THREE.TextureLoader();
     const ringsTexture = loadRingTexture.load(ringTexture);
-    ringsTexture.encoding = THREE.sRGBEncoding; 
+    ringsTexture.colorSpace = THREE.SRGBColorSpace;  
 
     const ringMaterial = new THREE.MeshStandardMaterial({
         map: ringsTexture,

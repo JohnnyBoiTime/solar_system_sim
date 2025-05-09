@@ -10,7 +10,7 @@ export function createUranus() {
     // Load JPG as a THREE texture to use
     const loadTexture = new THREE.TextureLoader();
     const texture = loadTexture.load(uranusTexture);
-    texture.encoding = THREE.sRGBEncoding; 
+    texture.colorSpace = THREE.SRGBColorSpace; 
     
     const material = new THREE.MeshStandardMaterial({
         map: texture,
