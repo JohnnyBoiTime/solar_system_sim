@@ -22,7 +22,7 @@ new TextureLoader().load(galaxyTexture, (texture) => {
 });
 
 // FOV (degrees), aspect ratio, near and far clipping planes
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100000);
 
 // x, y, z position of the camera
 camera.position.set(10, 100, 500);
@@ -94,15 +94,16 @@ function onKeyUp(event) {
 document.addEventListener('keydown', onKeyDown);
 document.addEventListener('keyup', onKeyUp);   
 
+/*
 // Add a grid to give depth to the scene and 
 // shows orientation of camera, 
 // helps with placement and stuff
 const axes = new THREE.AxesHelper(500); 
 scene.add(axes);
-const grid = new THREE.GridHelper(1000, 20);
+const grid = new THREE.GridHelper(10000, 20);
 scene.add(grid);
 
-
+*/
 
 // Tracks which direction the camera is moving/facing
 const moving = { backward: false, forward: false, left: false, right: false};
@@ -127,16 +128,17 @@ const planets = {
     neptune: createNeptune()
 };
 
-// Distance of planets from sun (in AY)
+// Distance of planets from sun (current radius of sun + distance in km)
+// from sun found on google, gross way to do it but it works
 const distanceFromSun = {
-    mercury: 150,
-    venus: 160,
-    earth: 170,
-    mars: 180,
-    jupiter: 190,
-    saturn: 200,
-    uranus: 210,
-    neptune: 220
+    mercury: 166.91,
+    venus: 189.21,
+    earth: 263.17,
+    mars: 336,
+    jupiter: 887,
+    saturn: 1539,
+    uranus: 2979,
+    neptune: 4609
 };
 
 // Speed of each planet is relative to earths speed (3 sig figs).
@@ -255,35 +257,6 @@ function animate() {
     sun.rotation.x += 0.01;
     sun.rotation.y += 0.01;
 
-    /*
-    // Rotate the planets, find a way to get the rotations right later on
-    earth.rotation.x += 0.01;
-    earth.rotation.y += 0.01;
-
-    mercury.rotation.x += 0.01;
-    mercury.rotation.y += 0.01;
-
-    venus.rotation.x += 0.01;
-    venus.rotation.y += 0.01;
-
-    mars.rotation.x += 0.01;
-    mars.rotation.y += 0.01;
-
-    jupiter.rotation.x += 0.01;
-    jupiter.rotation.y += 0.01;
-
-    saturn.planet.rotation.x += 0.01;
-    saturn.planet.rotation.y += 0.01;
-
-    uranus.rotation.x += 0.01;
-    uranus.rotation.y += 0.01;
-
-    neptune.rotation.x += 0.01;
-    neptune.rotation.y += 0.01;
-
-    pivotPoint.rotation.y += orbitSpeed * delta; // Rotate the pivot point
-
-    */
     // Render via the camera's pOV
     renderer.render(scene, camera);
 
