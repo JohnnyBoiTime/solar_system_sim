@@ -1,9 +1,16 @@
 import * as THREE from 'three';
 
-export function createOrbitPathsOfPlanets(radiusFromSun, segments = 64, color = 0x888888) {
+export function createOrbitPathsOfPlanets(a, e, segments = 128, color = 0x888888) {
+   
+    // Computs the semi-minor axis
+    const b = a * Math.sqrt(1 - (e * e));
+
+    // Shifts center of the ellipse 
+    const centerXAxis = -a * e;
+  
     const curve = new THREE.EllipseCurve(
-        0, 0, // Center of ellipse at axis origin (0,0)           
-        radiusFromSun, radiusFromSun,   // x and y radius of ellipse      
+        centerXAxis, 0, // Center of ellipse at axis origin (0,0)           
+        a, b,   // x and y radius of ellipse      
         0, 2 * Math.PI, // starting and ending angles of ellipse
         false, // false = clockwise, true = counter-clockwise         
         0 // rotation of ellipse in radians              

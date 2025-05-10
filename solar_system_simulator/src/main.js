@@ -166,6 +166,53 @@ const sizeOfthePlanets = {
     neptune: 3.86
 }
 
+// Calculate the eccentricity of each planet
+const eccentricityOfPlanets = {
+    mercury: 0.2056,
+    venus: 0.0068,
+    earth: 0.0167,
+    mars: 0.0934,
+    jupiter: 0.0489,
+    saturn: 0.0565,
+    uranus: 0.0463,
+    neptune: 0.0097
+};
+
+// Semi-major axis of each planet (just distance form sun)
+const semiMajorAxisOfPlanets = {
+    mercury: distanceFromSun.mercury,
+    venus: distanceFromSun.venus,
+    earth: distanceFromSun.earth,
+    mars: distanceFromSun.mars,
+    jupiter: distanceFromSun.jupiter,
+    saturn: distanceFromSun.saturn,
+    uranus: distanceFromSun.uranus,
+    neptune: distanceFromSun.neptune
+};
+
+// Inclination of each planet (degrees)
+const inclinationOfPlanets = {
+    mercury: 7.0,
+    venus: 3.39,
+    earth: 0,
+    mars: 1.85,
+    jupiter: 1.3,
+    saturn: 2.49,
+    uranus: 0.77,
+    neptune: 1.77
+};
+
+const perhelionOfPlanets = {
+    mercury: 29.12,
+    venus: 54.88,
+    earth: 114.21,
+    mars: 286.50,
+    jupiter: 273.66,
+    saturn: 339.39,
+    uranus: 96.99,
+    neptune: 273.187
+}
+
 // Sets scales of planets based on the size of earth!
 planets.mercury.scale.set(sizeOfthePlanets.mercury, sizeOfthePlanets.mercury, sizeOfthePlanets.mercury);
 planets.venus.scale.set(sizeOfthePlanets.venus, sizeOfthePlanets.venus, sizeOfthePlanets.venus);
@@ -190,26 +237,38 @@ sunLight.position.set(0, 0, 0);
 
  // Create the orbits of the planets and add them to the scene
 const orbitsOfPlanets = Object.entries(planets).map(([planet, mesh]) => {
-    const distance = distanceFromSun[planet];
+    
+    // Set distance and orbits
+    const distance = semiMajorAxisOfPlanets[planet];
+    const eccentricity = eccentricityOfPlanets[planet];
+    const inclination = THREE.MathUtils.degToRad(inclinationOfPlanets[planet]);
+    const perhelion = THREE.MathUtils.degToRad(perhelionOfPlanets[planet]);
+    const b = distance * Math.sqrt(1 - eccentricity * eccentricity); // Semi-minor axis
+    const changingXAxis = -distance * eccentricity; 
+    const phase = Math.random(); 
+
+    const orbitalPath = new THREE.EllipseCurve(
+        changingXAxis, 0, // Center of ellipse at axis origin (0,0)
+        distance, b,   // x and y radius of ellipse
+        0, 2 * Math.PI, // starting and ending angles of ellipse
+        false, // false = clockwise, true = counter-clockwise
+        0 // rotation of ellipse in radians
+    );
+
+    // Draw orbit line
+    const orbitLine = createOrbitPathsOfPlanets(distance, eccentricity, 256, 0x8888ff); // Create the orbit line
+    orbitLine.rotation.x = inclination; 
+    orbitLine.rotation.y = perhelion; 
+
+    // Speed of each planet
     const speed = orbitalSpeedOfPlanets[planet];
-
-    // Randomize the starting positions of the planets
-    const startingPosition = Math.random() * Math.PI * 2;
-    mesh.position.set(distance * Math.cos(startingPosition), 0, distance * Math.sin(startingPosition)); 
-
-    // Create the pivot point (the sun) to have the sphere orbit around
-    const pivotPoint = new THREE.Object3D();
-    const orbitLine = createOrbitPathsOfPlanets(distance); // Create the orbit line
 
     orbitLine.position.copy(sun.position); 
     // Center the pivot point on the sun sp mercury orbits around the sun
-    pivotPoint.position.copy(sun.position);
-    scene.add(pivotPoint);
     scene.add(orbitLine);
+    scene.add(mesh); // Add the planet to the scene
 
-    pivotPoint.add(mesh); 
-
-    return {pivotPoint, speed};
+    return { mesh, orbitalPath, inclination, phase, perhelion, speed};
 
 });
 
@@ -249,8 +308,17 @@ function animate() {
     }
 
     // Rotate planets around the sun
-    orbitsOfPlanets.forEach(({pivotPoint, speed}) => {
-        pivotPoint.rotation.y += speed * delta;
+    orbitsOfPlanets.forEach(orbit => {
+        // Advance the phase of the orbit based on speed and delta time
+        orbit.phase = (orbit.phase + orbit.speed * delta) % 1;
+
+        const pointIn2D = orbit.orbitalPath.getPoint(orbit.phase);
+        const pointIn3D = new THREE.Vector3(pointIn2D.x, 0, pointIn2D.y)
+            .applyAxisAngle(new THREE.Vector3(1, 0, 0), orbit.inclination) // Rotate around the y-axis
+            .applyAxisAngle(new THREE.Vector3(0, 1, 0), orbit.perhelion)
+            .add(sun.position);
+        
+            orbit.mesh.position.copy(pointIn3D); 
     });
 
     // Rotate the sun 
