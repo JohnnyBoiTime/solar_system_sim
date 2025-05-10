@@ -24,14 +24,14 @@ new TextureLoader().load(galaxyTexture, (texture) => {
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 
 // x, y, z position of the camera
-camera.position.set(0, 25, 50);
+camera.position.set(10, 100, 500);
 
 // Vectors to avoid creating new vectors every frame
 const forwardDirection = new THREE.Vector3();
 const rightDirection = new THREE.Vector3(); 
 
 // Speed (units/sec) for flying around
-const speed = 20;
+const speed = 500;
 
 // Draws scene and smooths out the edges
 const renderer = new THREE.WebGLRenderer({antialias: true});
@@ -96,10 +96,9 @@ document.addEventListener('keyup', onKeyUp);
 // Add a grid to give depth to the scene and 
 // shows orientation of camera, 
 // helps with placement and stuff
-
-const axes = new THREE.AxesHelper(20); 
+const axes = new THREE.AxesHelper(500); 
 scene.add(axes);
-const grid = new THREE.GridHelper(1000, 1000);
+const grid = new THREE.GridHelper(1000, 20);
 scene.add(grid);
 
 
@@ -112,7 +111,7 @@ const clock = new THREE.Clock(); // Measures time between frames
 const geometry = new THREE.SphereGeometry(); // data for a unit sun
 const material = new THREE.MeshBasicMaterial({ color: 0xffff00 });
 const sun = new THREE.Mesh(geometry, material); // Creates render
-sun.scale.set(10, 10, 10);
+sun.scale.set(109.17, 109.17, 109.17);
 scene.add(sun); 
 
 // Planets
@@ -127,24 +126,24 @@ const planets = {
     neptune: createNeptune()
 };
 
-// Distance of planets from sun
+// Distance of planets from sun (in AY)
 const distanceFromSun = {
-    mercury: 20,
-    venus: 30,
-    earth: 40,
-    mars: 50,
-    jupiter: 60,
-    saturn: 70,
-    uranus: 80,
-    neptune: 90
+    mercury: 150,
+    venus: 160,
+    earth: 170,
+    mars: 180,
+    jupiter: 190,
+    saturn: 200,
+    uranus: 210,
+    neptune: 220
 };
 
 // Speed of each planet is relative to earths speed (3 sig figs).
-// Formula: speed of planet / speed of earth
+// Formula: speed of planet / speed of earth (km/s)
 const orbitalSpeedOfPlanets = {
     mercury: 1.99,
     venus: 1.18,
-    earth: 1,
+    earth: 1, // 29.78 km/s
     mars: 0.81,
     jupiter: 0.44,
     saturn: 0.33,
@@ -152,8 +151,31 @@ const orbitalSpeedOfPlanets = {
     neptune: 0.18
 }
 
+// Scale the planets in relation to the radius of earth (km)
+const sizeOfthePlanets = {
+    mercury: 0.4,
+    venus: 0.95,
+    earth: 1, // 6378 km
+    mars: 0.53,
+    jupiter: 11.2,
+    saturn: 9.13,
+    uranus: 4,
+    neptune: 3.86
+}
+
+// Sets scales of planets based on the size of earth!
+planets.mercury.scale.set(sizeOfthePlanets.mercury, sizeOfthePlanets.mercury, sizeOfthePlanets.mercury);
+planets.venus.scale.set(sizeOfthePlanets.venus, sizeOfthePlanets.venus, sizeOfthePlanets.venus);
+planets.earth.scale.set(sizeOfthePlanets.earth, sizeOfthePlanets.earth, sizeOfthePlanets.earth);
+planets.mars.scale.set(sizeOfthePlanets.mars, sizeOfthePlanets.mars, sizeOfthePlanets.mars);
+planets.jupiter.scale.set(sizeOfthePlanets.jupiter, sizeOfthePlanets.jupiter, sizeOfthePlanets.jupiter);
+planets.saturn.scale.set(sizeOfthePlanets.saturn, sizeOfthePlanets.saturn, sizeOfthePlanets.saturn);
+planets.uranus.scale.set(sizeOfthePlanets.uranus, sizeOfthePlanets.uranus, sizeOfthePlanets.uranus);
+planets.neptune.scale.set(sizeOfthePlanets.neptune, sizeOfthePlanets.neptune, sizeOfthePlanets.neptune);
+
+
 // Sunlight!
-const sunLight = new THREE.PointLight(0xffffff, 4, 200, 0);
+const sunLight = new THREE.PointLight(0xffffff, 4, 0, 0);
  
 sun.add(sunLight);
 sunLight.position.set(0, 0, 0);
@@ -220,6 +242,7 @@ function animate() {
         wrapper.position.addScaledVector(rightDirection, speed * delta);
     }
 
+    // Rotate planets around the sun
     orbitsOfPlanets.forEach(({pivotPoint, speed}) => {
         pivotPoint.rotation.y += speed * delta;
     });

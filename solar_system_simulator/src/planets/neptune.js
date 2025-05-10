@@ -6,7 +6,6 @@ export function createNeptune() {
 
     // Create sphere, material, and mesh for neptune
     const neptune = new THREE.SphereGeometry(1, 32, 32);
-    
 
     // Load JPG as a THREE texture to use
     const loadTexture = new THREE.TextureLoader();
