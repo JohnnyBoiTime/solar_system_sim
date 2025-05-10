@@ -9,6 +9,7 @@ import { createJupiter } from './planets/jupiter';
 import { createSaturn } from './planets/saturn';
 import { createUranus } from './planets/uranus';
 import { createNeptune } from './planets/neptune';
+import { createOrbitPathsOfPlanets } from './planets/orbitsOfPlanets';
 import { PointerLockControls } from 'three/examples/jsm/controls/PointerLockControls.js';
 
 // Create the scene and the camera
@@ -196,10 +197,13 @@ const orbitsOfPlanets = Object.entries(planets).map(([planet, mesh]) => {
 
     // Create the pivot point (the sun) to have the sphere orbit around
     const pivotPoint = new THREE.Object3D();
+    const orbitLine = createOrbitPathsOfPlanets(distance); // Create the orbit line
 
+    orbitLine.position.copy(sun.position); 
     // Center the pivot point on the sun sp mercury orbits around the sun
     pivotPoint.position.copy(sun.position);
     scene.add(pivotPoint);
+    scene.add(orbitLine);
 
     pivotPoint.add(mesh); 
 
