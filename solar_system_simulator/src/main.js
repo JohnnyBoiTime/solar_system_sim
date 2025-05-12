@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { TextureLoader, EquirectangularReflectionMapping } from 'three';
+import {CSS2DRenderer, CSS2DObject} from 'three/examples/jsm/renderers/CSS2DRenderer.js'
 import galaxyTexture from './textures/MilkyWayGalaxy.jpg';
 import { createMercury } from './planets/mercury';
 import { createVenus } from './planets/venus';
