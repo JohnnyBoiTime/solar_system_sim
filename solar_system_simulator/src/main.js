@@ -10,6 +10,7 @@ import { createSaturn } from './planets/saturn';
 import { createUranus } from './planets/uranus';
 import { createNeptune } from './planets/neptune';
 import { createOrbitPathsOfPlanets } from './planets/orbitsOfPlanets';
+import { spawnPlanets } from './features/placePlanet';
 import { PointerLockControls } from 'three/examples/jsm/controls/PointerLockControls.js';
 
 // Create the scene and the camera
@@ -49,14 +50,15 @@ const controls = new PointerLockControls(camera, renderer.domElement);
 const wrapper = controls.getObject();
 scene.add(wrapper);
 
-// Clicking the canvas allows the user to look around. When user clicks,
-// the cursor is hidden and the camera is locked to the canvas,
-// allowing the user to look around
-document.body.addEventListener('click', () => controls.lock());
-
 // Events for pressing wasd keys, basic control scheme
 function onKeyDown(event) {
     switch (event.code) {
+        case 'KeyP':
+            controls.unlock();
+            if (!controls.unlock()) {
+                controls.lock();
+            }
+            break;
         case 'KeyW':
             moving.forward = true;
             break;
@@ -272,7 +274,11 @@ const orbitsOfPlanets = Object.entries(planets).map(([planet, mesh]) => {
 
 });
 
-// Now to animate the sun
+
+spawnPlanets(scene, camera, renderer);
+
+
+// Now to animate the scene
 function animate() {
 
     // Request animation frame for smooth rendering
@@ -318,6 +324,7 @@ function animate() {
             .applyAxisAngle(new THREE.Vector3(0, 1, 0), orbit.perhelion)
             .add(sun.position);
         
+            // Copy the rotation
             orbit.mesh.position.copy(pointIn3D); 
     });
 
