@@ -26,11 +26,22 @@ export function spawnPlanets(scene, camera, renderer, spawnedPlanets) {
             // Create planet to put in position of coordinates from above
             const geometry = new THREE.SphereGeometry(1, 16, 16);
             const material = new THREE.MeshStandardMaterial({ color: 0xff0000});
-            const planet = new THREE.Mesh(geometry, material);
-            planet.position.copy(placementOfPlanet);
-            scene.add(planet);
+            const body = new THREE.Mesh(geometry, material);
+
+            // Add it to the scene
+            body.position.copy(placementOfPlanet);
+            scene.add(body);
+            
+            // Attributes for spawned planets
+            const planetAttributes = {
+                body: body,
+                mass: 5,
+                velocity: new THREE.Vector3() 
+            };
+
+        
 
             // Keep track of all spawned planets
-            spawnedPlanets.push(planet);
+            spawnedPlanets.push(planetAttributes);
     });
 }

@@ -35,7 +35,6 @@ const rightDirection = new THREE.Vector3();
 
 // Speed (units/sec) for flying around
 const speed = 500;
-const G = 6.67e-11;
 
 // Draws scene and smooths out the edges
 const renderer = new THREE.WebGLRenderer({antialias: true});
@@ -277,7 +276,7 @@ const orbitsOfPlanets = Object.entries(planets).map(([planet, mesh]) => {
 });
 
 const spawnedPlanets = [];
-spawnPlanets(scene, camera, renderer, spawnPlanets);
+spawnPlanets(scene, camera, renderer, spawnedPlanets);
 
 
 // Now to animate the scene
@@ -334,7 +333,7 @@ function animate() {
     sun.rotation.x += 0.01;
     sun.rotation.y += 0.01;
 
-    gravitationalPull()
+    gravitationalPull(spawnedPlanets, delta);
 
     // Render via the camera's pOV
     renderer.render(scene, camera);

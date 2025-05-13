@@ -2,17 +2,21 @@ import * as THREE from 'three';
 
 // dt = little change in time
 export function gravitationalPull(planets, dt) {
-    const acceleration = planets.map(_ => new THREE.Vector3());
+const G = 6.67e-3;
+
+    const numPlanets = planets.length;
+
+    const acceleration = Array.from({length: numPlanets}, () => new THREE.Vector3());
 
     // Compute force between each planet
-    for (let i = 0; i < planets.length; i++) {
+    for (let i = 0; i < numPlanets; i++) {
 
         // Pair each planet with the another, excluding itself
-        for (let j = i + 1; j < planets.length; j++) {
+        for (let j = i + 1; j < numPlanets; j++) {
             const planet1 = planets[i], planet2 = planets[j];
 
             // Get R vectir (planet 1 pointing to planet 2)
-            const rVector = new THREE.Vector3().subVectors(planet2.mesh.position, planet1.mesh.position);
+            const rVector = new THREE.Vector3().subVectors(planet2.body.position, planet1.body.position);
             const distanceBetweenPlanets = rVector.lengthSq() + 0.01; // Added 0.01 so we don't crash by div0
             const gravForce = G * (planet1.mass * planet2.mass) / distanceBetweenPlanets; // big G formula
             
@@ -29,6 +33,6 @@ export function gravitationalPull(planets, dt) {
     // We are integrating the velocity and position by dt
     planets.forEach((planet, index) => {
         planet.velocity.addScaledVector(acceleration[index], dt);
-        planet.mesh.position.addScaledVector(planet.velocty, dt);
+        planet.body.position.addScaledVector(planet.velocity, dt);
     });
 }
