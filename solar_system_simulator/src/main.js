@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { TextureLoader, EquirectangularReflectionMapping } from 'three';
-import {CSS2DRenderer, CSS2DObject} from 'three/examples/jsm/renderers/CSS2DRenderer.js'
+import { gravitationalPull } from './features/gravity';
 import galaxyTexture from './textures/MilkyWayGalaxy.jpg';
 import { createMercury } from './planets/mercury';
 import { createVenus } from './planets/venus';
@@ -35,6 +35,7 @@ const rightDirection = new THREE.Vector3();
 
 // Speed (units/sec) for flying around
 const speed = 500;
+const G = 6.67e-11;
 
 // Draws scene and smooths out the edges
 const renderer = new THREE.WebGLRenderer({antialias: true});
@@ -275,8 +276,8 @@ const orbitsOfPlanets = Object.entries(planets).map(([planet, mesh]) => {
 
 });
 
-
-spawnPlanets(scene, camera, renderer);
+const spawnedPlanets = [];
+spawnPlanets(scene, camera, renderer, spawnPlanets);
 
 
 // Now to animate the scene
@@ -332,6 +333,8 @@ function animate() {
     // Rotate the sun 
     sun.rotation.x += 0.01;
     sun.rotation.y += 0.01;
+
+    gravitationalPull()
 
     // Render via the camera's pOV
     renderer.render(scene, camera);

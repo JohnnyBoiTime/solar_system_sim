@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 
 // Function to spawn planets in the scene
-export function spawnPlanets(scene, camera, renderer) {
+export function spawnPlanets(scene, camera, renderer, spawnedPlanets) {
     
     // Create ray and mouse to position where to palce planet
     const raycaster = new THREE.Raycaster();
@@ -29,5 +29,8 @@ export function spawnPlanets(scene, camera, renderer) {
             const planet = new THREE.Mesh(geometry, material);
             planet.position.copy(placementOfPlanet);
             scene.add(planet);
+
+            // Keep track of all spawned planets
+            spawnedPlanets.push(planet);
     });
 }
