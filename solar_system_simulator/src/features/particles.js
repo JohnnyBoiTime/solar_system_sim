@@ -1,7 +1,7 @@
 // https://www.youtube.com/watch?v=OFqENgtqRAY
 
 import * as THREE from 'three';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+// import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
 // Vertex Shader. Runs once per vertex (corners/points of the shape)
 // gl_position decides where each vertex goes on the screen.
@@ -18,8 +18,11 @@ const _VS = `
 uniform float pointMultiplier; 
 
 attribute float size;
+attribute float angle;
 attribute vec4 color;
-varing vec4 vColor
+
+varying vec4 vColor;
+varying vec2 vAngle;
 
 void main() {
     vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
@@ -27,6 +30,7 @@ void main() {
     gl_Position = projectionMatrix * mvPosition;
     gl_PointSize = size * pointMultiplier / gl_Position.w;
 
+    vAngle = vec2(cos(angle), sin(angle));
     vColor = color;
 }`;
 
@@ -38,9 +42,11 @@ const _FS = `
 uniform sampler2D diffuseTexture;
 
 varying vec4 vColor;
+varying vec2 vAngle
 
 void main() {
-    gl_FragColor = texture2D(diffuseTexture, gl_PointCoord) * vColor;
+    vec2 coords = (gl_PointCoord - 0.5) * mat2(vAngle.x, vAngle.y, -vAngle.y, vAngle.x) + 0.5;
+    gl_FragColor = texture2D(diffuseTexture, coords) * vColor;
 }`;
 
 // Simplifying the above: the VS draws the shape, the FS shades it in. 
@@ -65,7 +71,6 @@ class LinearSpline {
             }
             p1 = i;
         }
-    
 
         const p2 = Math.min(this._points.length - 1, p1 + 1);
 
@@ -150,34 +155,60 @@ class ParticleSystem {
                color: new THREE.Color(Math.random(), Math.random(), Math.random()),
                alpha: Math.random(),
                life: 5.0,
+               rotation: Math.random() * 2.0 * Math.PI,
             });
         }     
     }
 
-    _updateGeometry() {
+    _UpdateGeometry() {
         const positions = [];
         const sizes = [];
         const colors = [];
+        const angles = [];
 
+        // Update the positions, colors, size, rotations
         for (let particle of this._particles) {
             positions.push(particle.x, particle.y, particle.z);
             colors.push(particle.color.r, particle.color.g, particle.color.b, particle.alpha);
             sizes.push(particle.size);
+            angles.push(particle.rotation);
         }
 
+        // Sets attributes to be used in vertex and fragment shaders
         this._geometry.setAttribute(
             'position', new THREE.Float32BufferAttribute(positions, 3));
         this._geometry.setAttribute(
             'size', new THREE.Float32BufferAttribute(sizes, 1));
         this._geometry.setAttribute(
             'color', new THREE.Float32BufferAttribute(colors, 4));            
+        this._geometry.setAttribute(
+            'angle', new THREE.Float32BufferAttribute(colors, 1));            
+    
 
         this._geometry.attributes.position.needsUpdate = true;    
         this._geometry.attributes.size.needsUpdate = true;    
-        this._geometry.attributes.color.needsUpdate = true;    
+        this._geometry.attributes.color.needsUpdate = true; 
+        this._geometry.attributes.needsUpdate = true;   
     }
 
-    _updateParticles(timeElapsed) {
+    _UpdateParticles(timeElapsed) {
+
+        for (let particle of this._particles) {
+            particle.life -= timeElapsed;
+        }
+
+        this._particles = this._particles.filter(particle => {
+            return particle.life > 0;
+        });
+
+        for (let particle of this._particles) {
+            const t = 1.0 - particle.life / 5.0;
+
+            particle.rotation += timeElapsed * 0.5;
+            // particle.alpha = this._alphaSpline.Get(t);
+            //particle.color.copy(this._colorSpline,Get(t));
+        }
+
         this._particles.sort((a, b) => {
             const d1 = this._camera.position.distanceTo(a.position);
             const d2 = this._camera.positon.distanceTo(b.position);
@@ -195,8 +226,7 @@ class ParticleSystem {
     }
 
     Step(timeElapsed) {
-        this._updateParticles(timeElapsed);
-        this._updateGeometry();
+        this._UpdateParticles(timeElapsed);
+        this._UpdateGeometry();
     }
 }
-

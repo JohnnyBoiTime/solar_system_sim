@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 
-export async function handleCollisions(planets, explosionEmitter, explosionSystem, delta) {
+export async function handleCollisions(planets) {
 
     // Amount of planets currently spawned in
     const numOfPlanets = planets.length;
@@ -18,6 +18,8 @@ export async function handleCollisions(planets, explosionEmitter, explosionSyste
         
             // Planets have collided
             if (distanceBetweenPlanets < minimumDistance) {
+
+                console.log("COLLIDED!");
                 // Calculate midpoint, add an animation later
                 const midPointOfPlanets = planet1.body.position.clone()
                                             .add(planet2.body.position)
