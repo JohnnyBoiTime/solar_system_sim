@@ -51,7 +51,7 @@ export default class App {
     document.addEventListener('keyup',   (e) => this.inputController.handleKeyUp(e));
   }
 
-  Start() {
+  start() {
     this._Animate();
   }
 
