@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import jupiterTexture from '../textures/jupiter.jpg';
+import jupiterTexture from '../textures/planetTextures/jupiter.jpg';
 
 // Pretty self explanatory, this file creates jupiter and adds it to the scene
 export function createJupiter() {

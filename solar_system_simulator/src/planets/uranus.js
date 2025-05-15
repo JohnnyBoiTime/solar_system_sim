@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import uranusTexture from '../textures/uranus.jpg';
+import uranusTexture from '../textures/planetTextures/uranus.jpg';
 
 // Pretty self explanatory, this file creates uranus and adds it to the scene
 export function createUranus() {

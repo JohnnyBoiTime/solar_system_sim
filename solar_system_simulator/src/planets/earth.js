@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import earthTexture from '../textures/earth.jpg';
+import earthTexture from '../textures/planetTextures/earth.jpg';
 
 // Pretty self explanatory, this file creates earth and adds it to the scene
 export function createEarth() {

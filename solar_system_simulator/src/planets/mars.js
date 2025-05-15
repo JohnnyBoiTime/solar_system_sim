@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import marsTexture from '../textures/mars.jpg';
+import marsTexture from '../textures/planetTextures/mars.jpg';
 
 // Pretty self explanatory, this file creates mars and adds it to the scene
 export function createMars() {

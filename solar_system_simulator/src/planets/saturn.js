@@ -1,6 +1,6 @@
 import * as THREE from 'three';
-import saturnTexture from '../textures/saturn.jpg';
-import ringTexture from '../textures/saturnRings.jpg';
+import saturnTexture from '../textures/planetTextures/saturn.jpg';
+import ringTexture from '../textures/planetTextures/saturnRings.jpg';
 
 // Pretty self explanatory, this file creates saturn and adds it to the scene
 export function createSaturn() {

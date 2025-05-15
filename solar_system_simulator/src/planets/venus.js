@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import venusTexture from '../textures/venus.jpg';
+import venusTexture from '../textures/planetTextures/venus.jpg';
 
 // Pretty self explanatory, this file creates venus and adds it to the scene
 export function createVenus() {

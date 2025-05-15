@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import neptuneTexture from '../textures/neptune.jpg';
+import neptuneTexture from '../textures/planetTextures/neptune.jpg';
 
 // Pretty self explanatory, this file creates neptune and adds it to the scene
 export function createNeptune() {

@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import mercuryTexture from '../textures/mercury.jpg';
+import mercuryTexture from '../textures/planetTextures/mars.jpg';
 
 // Pretty self explanatory, this file creates mercury and adds it to the scene
 export function createMercury() {
