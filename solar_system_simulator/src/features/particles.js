@@ -3,25 +3,83 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
+// Vertex Shader. Runs once per vertex (corners/points of the shape)
+// gl_position decides where each vertex goes on the screen.
+// This pretty much positions the geometry in the scene by taking the 
+// corners/vertexes of the shape and connects them together.
+
+// Varying passes down the information from the vertex shader into the
+// fragment shader.
+
+// model space: Coordinate system where mesh is, all positions are relative to model
+// view space: all positions are relative to camera
+// Clip space: Where the vertices/fragments are in the cameras 3-d view
 const _VS = `
-uniform float pointMultiplier;
+uniform float pointMultiplier; 
 
 attribute float size;
+attribute vec4 color;
+varing vec4 vColor
 
 void main() {
     vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
 
     gl_Position = projectionMatrix * mvPosition;
     gl_PointSize = size * pointMultiplier / gl_Position.w;
+
+    vColor = color;
 }`;
 
+// Fragment Shader. Runs once per pixel that covers the shape
+// Decides what color each pixel should be
+// Gets data from the vertex shader, getting info for the color/angle.
+// This pretty much paints inside of the shape the vertex shader created
 const _FS = `
 uniform sampler2D diffuseTexture;
 
+varying vec4 vColor;
+
 void main() {
-    gl_FragColor = texture2D(diffuseTexture, gl_PointCoord);
+    gl_FragColor = texture2D(diffuseTexture, gl_PointCoord) * vColor;
 }`;
 
+// Simplifying the above: the VS draws the shape, the FS shades it in. 
+
+
+class LinearSpline {
+    constructor(lerp) {
+        this._points = [];
+        this._lerp = lerp;
+    }
+
+    AddPoint(t, d) {
+        this._points.push([t, d]);
+    }
+
+    Get(t) {
+        let p1 = 0;
+
+        for (let i = 0; i < this._points.length; i++) {
+            if (this._points[i][0] >= t) {
+                break;
+            }
+            p1 = i;
+        }
+    
+
+        const p2 = Math.min(this._points.length - 1, p1 + 1);
+
+        if (p1 == p2) {
+            return this._points[p1][1];
+        }
+
+        return this._lerp(
+            (t - this._points[p1][0]) / (
+                this._points[p2][0] - this._points[p1][0]),
+                this._points[p1][1], this._points[p2][1]);
+         
+    }
+}
 
 class ParticleSystem {
     constructor(params) {
@@ -38,7 +96,7 @@ class ParticleSystem {
         uniforms: uniforms,
         vertexShader: _VS,
         fragmentShader: _FS,
-        blending: THREE.AdditiveBlending,
+        blending: THREE.NormalBlending,
         depthTest: true,
         depthWrite: false,
         transparent: true,
@@ -48,12 +106,36 @@ class ParticleSystem {
     this._camera = params.camera;
     this._particles = [];
 
+    // Create buffers. 
     this._geometry = new THREE.BufferGeometry();
     this._geometry.setAttribute('position', new THREE.Float32BufferAttribute([], 3));
+    this._geometry.setAttribute('size', new THREE.Float32BufferAttribute([], 1));
+    this._geometry.setAttribute('color', new THREE.Float32BufferAttribute([], 3));
 
     this._points = new THREE.Points(this._geometry, this._material);
 
     params.parent.add(this._points);
+
+    this._alphaSpline = new LinearSpline((t, a, b) => {
+        return a + t * (b - a);
+    });
+
+    this._alphaSpline.AddPoint(0.0, 0.0);
+    this._alphaSpline.AddPoint(0.1, 1.0);
+    this._alphaSpline.AddPoint(0.5, 1.0);
+    this._alphaSpline.AddPoint(1.0, 0.0);
+
+    this._colorSpline = new LinearSpline((t, a, b) => {
+        const c = a.clone();
+        return c.lerp(b, t);
+    });
+
+    this._colorSpline.AddPoint(0.0, new THREE.Color(0xFF0000));
+    this._colorSpline.AddPoint(0.2, new THREE.Color(0xFF0000));
+    this._colorSpline.AddPoint(0.3, new THREE.Color(0x00FF00));
+    this._colorSpline.AddPoint(0.5, new THREE.Color(0x00FF00));
+    this._colorSpline.AddPoint(0.6, new THREE.Color(0x000000));
+    this._colorSpline.AddPoint(1.0, new THREE.Color(0x000000));
     
     }
 
@@ -65,21 +147,34 @@ class ParticleSystem {
                     (Math.random() * 2 - 1) * 1.0,
                     (Math.random() * 2 - 1) * 1.0),
                size: Math.random() * 2.0,     
+               color: new THREE.Color(Math.random(), Math.random(), Math.random()),
+               alpha: Math.random(),
+               life: 5.0,
             });
         }     
     }
 
     _updateGeometry() {
         const positions = [];
+        const sizes = [];
+        const colors = [];
 
         for (let particle of this._particles) {
             positions.push(particle.x, particle.y, particle.z);
+            colors.push(particle.color.r, particle.color.g, particle.color.b, particle.alpha);
+            sizes.push(particle.size);
         }
 
         this._geometry.setAttribute(
             'position', new THREE.Float32BufferAttribute(positions, 3));
+        this._geometry.setAttribute(
+            'size', new THREE.Float32BufferAttribute(sizes, 1));
+        this._geometry.setAttribute(
+            'color', new THREE.Float32BufferAttribute(colors, 4));            
 
         this._geometry.attributes.position.needsUpdate = true;    
+        this._geometry.attributes.size.needsUpdate = true;    
+        this._geometry.attributes.color.needsUpdate = true;    
     }
 
     _updateParticles(timeElapsed) {
