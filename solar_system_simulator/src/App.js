@@ -11,6 +11,7 @@ export default class App {
   _Initialize() {
     
     this.scene = new THREE.Scene();
+    console.log("→ mainScene:", this.scene);
 
     this._SetupRenderer();
 
@@ -44,6 +45,10 @@ export default class App {
     const wrapper = this.controls.getObject();
     this.scene.add(wrapper);
     this._RegisterInputEvents();
+  }
+
+  _SetupParticles() {
+
   }
 
   _RegisterInputEvents() {

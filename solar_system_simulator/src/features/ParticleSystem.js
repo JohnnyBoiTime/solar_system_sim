@@ -1,6 +1,7 @@
 // https://www.youtube.com/watch?v=OFqENgtqRAY
 
 import * as THREE from 'three';
+import fireTextureURL from '../textures/particleTextures/fire.png';
 // import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
 // Vertex Shader. Runs once per vertex (corners/points of the shape)
@@ -19,9 +20,9 @@ uniform float pointMultiplier;
 
 attribute float size;
 attribute float angle;
-attribute vec4 color;
+attribute vec4 colour;
 
-varying vec4 vColor;
+varying vec4 vColour;
 varying vec2 vAngle;
 
 void main() {
@@ -31,7 +32,7 @@ void main() {
     gl_PointSize = size * pointMultiplier / gl_Position.w;
 
     vAngle = vec2(cos(angle), sin(angle));
-    vColor = color;
+    vColour = colour;
 }`;
 
 // Fragment Shader. Runs once per pixel that covers the shape
@@ -41,12 +42,12 @@ void main() {
 const _FS = `
 uniform sampler2D diffuseTexture;
 
-varying vec4 vColor;
-varying vec2 vAngle
+varying vec4 vColour;
+varying vec2 vAngle;
 
 void main() {
     vec2 coords = (gl_PointCoord - 0.5) * mat2(vAngle.x, vAngle.y, -vAngle.y, vAngle.x) + 0.5;
-    gl_FragColor = texture2D(diffuseTexture, coords) * vColor;
+    gl_FragColor = texture2D(diffuseTexture, coords) * vColour;
 }`;
 
 // Simplifying the above: the VS draws the shape, the FS shades it in. 
@@ -86,11 +87,11 @@ class LinearSpline {
     }
 }
 
-class ParticleSystem {
+export default class ParticleSystem {
     constructor(params) {
         const uniforms = {
             diffuseTexture: {
-                value: new THREE.TextureLoader().load('../textures/particleTextures/fire.png')
+                value: new THREE.TextureLoader().load(fireTextureURL)
             },
             pointMultiplier: {
                 value: window.innerHeight / (2.0 * Math.tan(0.5 * 60 * Math.PI / 180))
@@ -115,7 +116,8 @@ class ParticleSystem {
     this._geometry = new THREE.BufferGeometry();
     this._geometry.setAttribute('position', new THREE.Float32BufferAttribute([], 3));
     this._geometry.setAttribute('size', new THREE.Float32BufferAttribute([], 1));
-    this._geometry.setAttribute('color', new THREE.Float32BufferAttribute([], 3));
+    this._geometry.setAttribute('colour', new THREE.Float32BufferAttribute([], 4));
+    this._geometry.setAttribute('angle', new THREE.Float32BufferAttribute([], 1));
 
     this._points = new THREE.Points(this._geometry, this._material);
 
@@ -144,19 +146,19 @@ class ParticleSystem {
     
     }
 
-    _AddParticles() {
+    _AddParticles(origin = new THREE.Vector3(0, 0, 0)) {
         for (let i = 0; i < 10; i++) {
-            this._particles.push({
-                position: new THREE.Vector3(
-                    (Math.random() * 2 - 1) * 1.0,
-                    (Math.random() * 2 - 1) * 1.0,
-                    (Math.random() * 2 - 1) * 1.0),
-               size: Math.random() * 2.0,     
+            const newParticle = {
+                position: origin.clone(),
+               size: 5.0,     
                color: new THREE.Color(Math.random(), Math.random(), Math.random()),
                alpha: Math.random(),
-               life: 5.0,
+               life: 0.1,
                rotation: Math.random() * 2.0 * Math.PI,
-            });
+            };
+            this._particles.push(newParticle);
+
+            console.log("Particle spawn point: ", newParticle.position.x, newParticle.position.y, newParticle.position.z); 
         }     
     }
 
@@ -168,7 +170,7 @@ class ParticleSystem {
 
         // Update the positions, colors, size, rotations
         for (let particle of this._particles) {
-            positions.push(particle.x, particle.y, particle.z);
+            positions.push(particle.position.x, particle.position.y, particle.position.z);
             colors.push(particle.color.r, particle.color.g, particle.color.b, particle.alpha);
             sizes.push(particle.size);
             angles.push(particle.rotation);
@@ -180,15 +182,16 @@ class ParticleSystem {
         this._geometry.setAttribute(
             'size', new THREE.Float32BufferAttribute(sizes, 1));
         this._geometry.setAttribute(
-            'color', new THREE.Float32BufferAttribute(colors, 4));            
+            'colour', new THREE.Float32BufferAttribute(colors, 4));            
         this._geometry.setAttribute(
-            'angle', new THREE.Float32BufferAttribute(colors, 1));            
-    
+            'angle', new THREE.Float32BufferAttribute(angles, 1));    
+            
+
 
         this._geometry.attributes.position.needsUpdate = true;    
         this._geometry.attributes.size.needsUpdate = true;    
-        this._geometry.attributes.color.needsUpdate = true; 
-        this._geometry.attributes.needsUpdate = true;   
+        this._geometry.attributes.colour.needsUpdate = true; 
+        this._geometry.attributes.angle.needsUpdate = true;   
     }
 
     _UpdateParticles(timeElapsed) {
@@ -211,7 +214,7 @@ class ParticleSystem {
 
         this._particles.sort((a, b) => {
             const d1 = this._camera.position.distanceTo(a.position);
-            const d2 = this._camera.positon.distanceTo(b.position);
+            const d2 = this._camera.position.distanceTo(b.position);
 
             if (d1 > d2) {
                 return -1;
@@ -225,7 +228,7 @@ class ParticleSystem {
         });
     }
 
-    Step(timeElapsed) {
+    step(timeElapsed) {
         this._UpdateParticles(timeElapsed);
         this._UpdateGeometry();
     }

@@ -12,7 +12,7 @@ import { createUranus } from './planets/uranus';
 import { createNeptune } from './planets/neptune';
 import { createOrbitPathsOfPlanets } from './planets/orbitsOfPlanets';
 import { spawnPlanets } from './features/placePlanet';
-import { PointerLockControls } from 'three/examples/jsm/controls/PointerLockControls.js';
+import ParticleSystem from './features/ParticleSystem';
 import { handleCollisions } from './features/collisions';
 
 export default class SolarSystem {
@@ -21,6 +21,11 @@ export default class SolarSystem {
         this.camera = camera;
         this.domElement = domElement;
         this._Initialize();
+
+        this.collisionExplosion = new ParticleSystem({
+            parent: this.scene,
+            camera: this.camera
+        });
     }
 
     _Initialize() {
@@ -121,6 +126,7 @@ export default class SolarSystem {
             }
 
             gravitationalPull(this.spawnedPlanets, delta);
-            handleCollisions(this.spawnedPlanets);
+            handleCollisions(this.scene, this.camera, this.spawnedPlanets, this.collisionExplosion);
+            this.collisionExplosion.step(delta);
         }
 }
