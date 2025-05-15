@@ -24,7 +24,7 @@ export default class Controls {
     // Pressing down moves camera
     handleKeyDown(event) {
         switch(event.code) {
-            case 'keyP':
+            case 'KeyP':
                 if (this.controls.isLocked) {
                     this.controls.unlock();
                 }
@@ -32,16 +32,16 @@ export default class Controls {
                     this.controls.lock();
                 }
             break;
-            case 'keyW':
+            case 'KeyW':
                 this.moving.forward = true;
                 break;
-            case 'keyS':
+            case 'KeyS':
                 this.moving.backward = true;
                 break;
-            case 'keyA':
+            case 'KeyA':
                 this.moving.left = true;
                 break;
-            case 'keyD':
+            case 'KeyD':
                 this.moving.right = true;
                 break;               
         }
@@ -50,16 +50,16 @@ export default class Controls {
     // Letting go stops moving camera
     handleKeyUp(event) {
         switch(event.code) {
-            case 'keyW':
+            case 'KeyW':
                 this.moving.forward = false;
                 break;
-            case 'keyS':
+            case 'KeyS':
                 this.moving.backward = false;
                 break;
-            case 'keyA':
+            case 'KeyA':
                 this.moving.left = false;
                 break;
-            case 'keyD':
+            case 'KeyD':
                 this.moving.right = false;
                 break;               
         }
@@ -78,7 +78,7 @@ export default class Controls {
                 this.speed * delta
             );
         }
-        if (this.moving.backwards) {
+        if (this.moving.backward) {
             this.wrapper.position.addScaledVector(
                 this.forwardDireciton,
                 -this.speed * delta

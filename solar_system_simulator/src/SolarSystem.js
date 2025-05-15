@@ -20,6 +20,7 @@ export default class SolarSystem {
         this.scene = scene;
         this.camera = camera;
         this.domElement = domElement;
+        this._Initialize();
     }
 
     _Initialize() {
@@ -62,7 +63,7 @@ export default class SolarSystem {
             }[name];
 
             const mesh = createPlanets();
-            mesh.set.scale(data.size, data.size, data.size);
+            mesh.scale.set(data.size, data.size, data.size);
             mesh.castShadow = true;
             mesh.recieveShadow = true;
             this.scene.add(mesh);
@@ -86,7 +87,7 @@ export default class SolarSystem {
             );
 
             orbitLine.rotation.x = THREE.MathUtils.degToRad(data.inclination);
-            orbitLine.rotation.x = THREE.MathUtils.degToRad(data.perhelion);
+            orbitLine.rotation.y = THREE.MathUtils.degToRad(data.perhelion);
             orbitLine.position.copy(this.sun.position);
             this.scene.add(orbitLine);
 
@@ -103,12 +104,14 @@ export default class SolarSystem {
         this.spawnedPlanets = [];
         spawnPlanets(this.scene, this.camera, this.domElement, this.spawnedPlanets);
 
+    }    
+
         update(delta) {
             this.sun.rotation.x += 0.01;
-            this.sun.rotaiton.y += 0.01;
+            this.sun.rotation.y += 0.01;
 
             for (const orbit of this.orbits) {
-                orbit.phase = (orbit.phase + orbit.speed * delta) & 0.1;
+                orbit.phase = (orbit.phase + orbit.speed * delta) % 1;
                 const points2D = orbit.orbitalPath.getPoint(orbit.phase);
                 const points3D = new THREE.Vector3(points2D.x, 0, points2D.y)
                     .applyAxisAngle(new THREE.Vector3(1, 0, 0), orbit.inclination)
@@ -116,6 +119,8 @@ export default class SolarSystem {
                     .add(this.sun.position);
                 orbit.mesh.position.copy(points3D);
             }
+
+            gravitationalPull(this.spawnedPlanets, delta);
+            handleCollisions(this.spawnedPlanets);
         }
-    }
 }
