@@ -36,6 +36,7 @@ export function spawnPlanets(scene, camera, renderer, spawnedPlanets) {
             const planetAttributes = {
                 body: body,
                 mass: 5,
+                radius: body.geometry.parameters.radius,
                 velocity: new THREE.Vector3() 
             };
 

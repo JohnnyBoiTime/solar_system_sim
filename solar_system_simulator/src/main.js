@@ -13,6 +13,7 @@ import { createNeptune } from './planets/neptune';
 import { createOrbitPathsOfPlanets } from './planets/orbitsOfPlanets';
 import { spawnPlanets } from './features/placePlanet';
 import { PointerLockControls } from 'three/examples/jsm/controls/PointerLockControls.js';
+import { handleCollisions } from './features/collisions';
 
 // Create the scene and the camera
 const scene = new THREE.Scene();
@@ -25,6 +26,8 @@ new TextureLoader().load(galaxyTexture, (texture) => {
 
 // FOV (degrees), aspect ratio, near and far clipping planes
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100000);
+
+let explosionSystem, explosionRenderer, explosionEmitter;
 
 // x, y, z position of the camera
 camera.position.set(10, 100, 500);
@@ -278,18 +281,14 @@ const orbitsOfPlanets = Object.entries(planets).map(([planet, mesh]) => {
 const spawnedPlanets = [];
 spawnPlanets(scene, camera, renderer, spawnedPlanets);
 
-
 // Now to animate the scene
 function animate() {
-
-    // Request animation frame for smooth rendering
-    requestAnimationFrame(animate);
 
     // Seconds since last frame
     const delta = clock.getDelta(); 
 
     // Update the rotation of the camera
-    controls.update(); 
+    controls.update(delta); 
     
     // Get forward-facing vector from the wrappers orientation
     wrapper.getWorldDirection(forwardDirection);
@@ -335,10 +334,14 @@ function animate() {
 
     gravitationalPull(spawnedPlanets, delta);
 
+    handleCollisions(spawnedPlanets, explosionEmitter, explosionSystem, delta);
+
     // Render via the camera's pOV
     renderer.render(scene, camera);
 
+    // Request animation frame for smooth rendering
+    requestAnimationFrame(animate);
+
 }
 
-// Animate!!!
 animate();

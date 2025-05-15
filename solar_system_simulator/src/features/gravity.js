@@ -2,7 +2,7 @@ import * as THREE from 'three';
 
 // dt = little change in time
 export function gravitationalPull(planets, dt) {
-const G = 6.67e-3;
+const G = 6.67e-1; // Can't really do a big G here or else the planets barely move :(
 
     const numPlanets = planets.length;
 
