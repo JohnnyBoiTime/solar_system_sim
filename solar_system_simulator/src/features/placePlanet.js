@@ -37,7 +37,8 @@ export function spawnPlanets(scene, camera, domElement, spawnedPlanets) {
                 body: body,
                 mass: 5,
                 radius: body.geometry.parameters.radius,
-                velocity: new THREE.Vector3() 
+                velocity: new THREE.Vector3(),
+                alive: true 
             };
 
         

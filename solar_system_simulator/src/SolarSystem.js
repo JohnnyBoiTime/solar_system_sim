@@ -112,6 +112,7 @@ export default class SolarSystem {
     }    
 
         update(delta) {
+
             this.sun.rotation.x += 0.01;
             this.sun.rotation.y += 0.01;
 

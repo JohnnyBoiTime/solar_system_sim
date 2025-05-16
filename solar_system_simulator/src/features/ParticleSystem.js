@@ -1,7 +1,7 @@
-// https://www.youtube.com/watch?v=OFqENgtqRAY
+// Particle logic: https://www.youtube.com/watch?v=OFqENgtqRAY
 
 import * as THREE from 'three';
-import fireTextureURL from '../textures/particleTextures/fire.png';
+import fireTextureURL from '../textures/particleTextures/fire.jpg';
 // import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
 // Vertex Shader. Runs once per vertex (corners/points of the shape)
@@ -149,8 +149,12 @@ export default class ParticleSystem {
     _AddParticles(origin = new THREE.Vector3(0, 0, 0)) {
         for (let i = 0; i < 10; i++) {
             const newParticle = {
-                position: origin.clone(),
-               size: 5.0,     
+                position: origin.clone().add(new THREE.Vector3(
+                    (Math.random() * 2 - 1),
+                    (Math.random() * 2 - 1),
+                    (Math.random() * 2 - 1),
+                )),
+               size: 1.0,     
                color: new THREE.Color(Math.random(), Math.random(), Math.random()),
                alpha: Math.random(),
                life: 0.1,
