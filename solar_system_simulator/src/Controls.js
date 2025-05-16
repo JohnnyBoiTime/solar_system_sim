@@ -4,6 +4,7 @@ import * as THREE from 'three';
 // Defines the controls
 export default class Controls {
 
+    // Basic control scheme
     constructor(controls) {
         this.controls = controls;
         this.wrapper = controls.getObject();

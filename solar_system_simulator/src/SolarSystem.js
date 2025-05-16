@@ -16,6 +16,8 @@ import ParticleSystem from './features/ParticleSystem';
 import { handleCollisions } from './features/collisions';
 
 export default class SolarSystem {
+
+    // Create everything
     constructor(scene, camera, domElement) {
         this.scene = scene;
         this.camera = camera;
@@ -28,12 +30,16 @@ export default class SolarSystem {
         });
     }
 
+    // Create the solar system
     _Initialize() {
+
+        // Load textures for all planets
         new TextureLoader().load(galaxyTexture, (texture) => {
             texture.mapping = EquirectangularReflectionMapping;
             this.scene.background = texture;
         });
 
+        // Create the sun
         const sunGeometry = new THREE.SphereGeometry();
         const sunMaterial = new THREE.MeshBasicMaterial({ color: 0xffff00});
         this.sun = new THREE.Mesh(sunGeometry, sunMaterial);
@@ -54,6 +60,7 @@ export default class SolarSystem {
             neptune: { distance: 4609.0, speed: 0.18,   size: 3.86, eccentricity: 0.0097, inclination: 1.77, perhelion: 273.187 }
         };
 
+        // Build the planet array
         this.planets = {};
         for (const [name, data] of Object.entries(this.planetData)) {
             const createPlanets = {
@@ -75,8 +82,11 @@ export default class SolarSystem {
             this.planets[name] = mesh;
         }
 
+        // Build the orbit array
         this.orbits = [];
         for (const [name, data] of Object.entries(this.planetData)) {
+
+            // Formula for accurate orbits
             const bAxis = data.distance * Math.sqrt(1 - data.eccentricity * data.eccentricity);
             const orbitalPath = new THREE.EllipseCurve(
                 -data.distance * data.eccentricity, 0,
@@ -106,6 +116,8 @@ export default class SolarSystem {
             });
         }
 
+        // Store all spawned planets to be used in collisions and various other 
+        // interactions
         this.spawnedPlanets = [];
         spawnPlanets(this.scene, this.camera, this.domElement, this.spawnedPlanets);
 
@@ -116,6 +128,7 @@ export default class SolarSystem {
             this.sun.rotation.x += 0.01;
             this.sun.rotation.y += 0.01;
 
+            // Draw the orbit of the planets
             for (const orbit of this.orbits) {
                 orbit.phase = (orbit.phase + orbit.speed * delta) % 1;
                 const points2D = orbit.orbitalPath.getPoint(orbit.phase);
@@ -126,6 +139,7 @@ export default class SolarSystem {
                 orbit.mesh.position.copy(points3D);
             }
 
+            // Gravity and collision
             gravitationalPull(this.spawnedPlanets, delta);
             handleCollisions(this.scene, this.camera, this.spawnedPlanets, this.collisionExplosion);
             this.collisionExplosion.step(delta);

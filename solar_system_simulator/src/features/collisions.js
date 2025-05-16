@@ -31,11 +31,14 @@ export function handleCollisions(scene, camera, planets, collisionExplosion) {
 
 
                 console.log("COLLIDED!");
+                
 
+                // Put explosion between the planets
                 const midPointOfPlanets = planet1.body.position.clone()
                                     .add(planet2.body.position)
                                     .multiplyScalar(0.5);
 
+                // Only plays animations on planets that are alive
                 if (planet1.alive == true && planet2.alive == true && planet1.mass > 0.00001 && planet2.mass > 0.00001) {                    
                     collisionExplosion._AddParticles(midPointOfPlanets);
                     scene.remove(planet1.body);
