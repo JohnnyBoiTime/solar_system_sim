@@ -66,6 +66,8 @@ export default class Controls {
         }
     }
 
+    
+
     // Update direcitons
     update(delta) {
         this.wrapper.getWorldDirection(this.forwardDireciton);

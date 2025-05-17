@@ -45,7 +45,7 @@ export default class SolarSystem {
         this.sun = new THREE.Mesh(sunGeometry, sunMaterial);
         this.sun.scale.set(109.17, 109.17, 109.17);
         this.scene.add(this.sun);
-        this.sunLight = new THREE.PointLight(0xffffff, 4, 0);
+        this.sunLight = new THREE.PointLight(0xffffff, 4, 0, 0);
         this.sun.add(this.sunLight);
 
         // All planets and their parameters

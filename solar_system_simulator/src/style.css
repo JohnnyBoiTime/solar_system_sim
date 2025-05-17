@@ -62,7 +62,6 @@ h1 {
   font-family: sans-serif;
   font-size: 14px;
   border-radius: 4px;
-  pointer-events: none;      
   z-index: 10;
 }
 

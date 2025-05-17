@@ -5,6 +5,7 @@ import { PointerLockControls } from 'three/examples/jsm/controls/PointerLockCont
 
 export default class App {
   constructor() {
+    this.simulationSpeedMultiplier = 1.0;
     this._Initialize();
   }
 
@@ -45,19 +46,37 @@ export default class App {
     this.camera.position.set(10, 100, 500);
   }
 
+  _SetUpDomElements() {
+    this.speedSlider = document.getElementById('simSpeedSlider');
+    this.speedValue = document.getElementById('speedOfSim');
+
+    this.speedSlider.addEventListener('input', e => {
+      this.simulationSpeedMultiplier = parseFloat(e.target.value);
+      this.speedValue.textContent = this.simulationSpeedMultiplier.toFixed(1) + 'x';
+      console.log(this.speedValue.textContent);
+    })
+  }
+
   // Setup for the controls of the simulation
   _SetupControls() {
     this.controls = new PointerLockControls(this.camera, this.renderer.domElement);
     const wrapper = this.controls.getObject();
     this.scene.add(wrapper);
     this._RegisterInputEvents();
+    this._SetUpDomElements();
   }
 
   
-  // Have pressing keys do things
+  // Have pressing keys do things and resizing camera correctly
   _RegisterInputEvents() {
     document.addEventListener('keydown', (e) => this.inputController.handleKeyDown(e));
     document.addEventListener('keyup',   (e) => this.inputController.handleKeyUp(e));
+    window.addEventListener('resize', () => {
+      const width = window.innerWidth, height = window.innerHeight;
+      this.renderer.setSize(width, height);
+      this.camera.aspect = width / height;
+      this.camera.updateProjectionMatrix();
+    })
   }
 
   // Starts the simulation
@@ -69,8 +88,10 @@ export default class App {
   _Animate() {
     const delta = this.clock.getDelta();
 
+    const simulationSpeed = delta * this.simulationSpeedMultiplier;
+
     this.inputController.update(delta);
-    this.solarSystem.update(delta);
+    this.solarSystem.update(simulationSpeed);
 
     this.renderer.render(this.scene, this.camera);
 
