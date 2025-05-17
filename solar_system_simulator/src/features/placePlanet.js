@@ -8,7 +8,7 @@ export function spawnPlanets(scene, camera, domElement, spawnedPlanets) {
     const mouse = new THREE.Vector2();
 
     // Position of mouse
-    domElement.addEventListener('click', event => {
+    const placePlanet = (e) => {
         
         // Center coordinates of mouse click on canvas
         mouse.x = (event.clientX / domElement.clientWidth) * 2 - 1;
@@ -40,10 +40,15 @@ export function spawnPlanets(scene, camera, domElement, spawnedPlanets) {
                 velocity: new THREE.Vector3(),
                 alive: true 
             };
-
-        
-
             // Keep track of all spawned planets
-            spawnedPlanets.push(planetAttributes);
-    });
+            spawnedPlanets.push(planetAttributes);  
+    };
+
+    domElement.addEventListener('mousedown', placePlanet);
+
+    return {
+        enable: () => domElement.addEventListener('mousedown', placePlanet),
+        disable: () => domElement.removeEventListener('mousedown', placePlanet)
+    };
+
 }

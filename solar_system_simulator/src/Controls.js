@@ -1,6 +1,5 @@
 import * as THREE from 'three';
 
-
 // Defines the controls
 export default class Controls {
 

@@ -18,10 +18,11 @@ import { handleCollisions } from './features/collisions';
 export default class SolarSystem {
 
     // Create everything
-    constructor(scene, camera, domElement) {
+    constructor(scene, camera, domElement, controls) {
         this.scene = scene;
         this.camera = camera;
         this.domElement = domElement;
+        this.control = controls;
         this._Initialize();
 
         this.collisionExplosion = new ParticleSystem({
@@ -119,10 +120,12 @@ export default class SolarSystem {
         // Store all spawned planets to be used in collisions and various other 
         // interactions
         this.spawnedPlanets = [];
-        spawnPlanets(this.scene, this.camera, this.domElement, this.spawnedPlanets);
+        this.placeSpawnedPlanets = spawnPlanets(this.scene, this.camera, this.domElement, this.spawnedPlanets);
+        this.control.addEventListener('lock', () => this.placeSpawnedPlanets.disable());
+        this.control.addEventListener('unlock', () => this.placeSpawnedPlanets.enable());
 
+    
     }    
-
         update(delta) {
 
             this.sun.rotation.x += 0.01;

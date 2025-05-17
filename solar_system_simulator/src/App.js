@@ -22,7 +22,7 @@ export default class App {
     this._SetupControls();
 
     // Create the solar system and controls to navigate around it
-    this.solarSystem = new SolarSystem(this.scene, this.camera, this.renderer.domElement);
+    this.solarSystem = new SolarSystem(this.scene, this.camera, this.renderer.domElement, this.controls);
     this.inputController = new Controls(this.controls);
 
     // Simulation time
