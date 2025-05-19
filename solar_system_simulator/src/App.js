@@ -41,7 +41,7 @@ export default class App {
     this.renderer.toneMappingExposure = 0.25;
     document.body.appendChild(this.renderer.domElement);
 
-    // Laben renderer, to label things!
+    // Label renderer, to label things!
     this.labelRenderer = new CSS2DRenderer();
     this.labelRenderer.setSize(window.innerWidth, window.innerHeight);
     this.labelRenderer.domElement.style.position = 'absolute';
@@ -100,7 +100,9 @@ export default class App {
   _Animate() {
     const delta = this.clock.getDelta();
 
-    const simulationSpeed = delta * this.simulationSpeedMultiplier;
+    const actualTime = delta * 0.1;
+
+    const simulationSpeed = actualTime * this.simulationSpeedMultiplier;
 
     this.inputController.update(delta);
     this.solarSystem.update(simulationSpeed);
