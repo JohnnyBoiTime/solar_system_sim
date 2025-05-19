@@ -24,7 +24,8 @@ export default class SolarSystem {
         this.camera = camera;
         this.domElement = domElement;
         this.control = controls;
-        this.sizeOfPlanetsMultiplier = 1.0;
+        this.sizeOfSpawnedPlanetMultiplier = 1.0;
+        this.sizeOfPlanetsMultipler = 1.0;
         this._ChangeSizeOfPlanets();
         this._Initialize();
 
@@ -36,13 +37,30 @@ export default class SolarSystem {
 
     // Thing to change the size of the spawned planets
     _ChangeSizeOfPlanets() {
+        
+        // Size of planets that are spawned
+        this.spawnedPlanetSizer = document.getElementById('spawnPlanetSizer');
+        this.sizeOfSpawnedPlanetValue = document.getElementById('sizeOfSpawnedPlanet');
+
+        this.spawnedPlanetSizer.addEventListener('input', e => {
+            this.sizeOfSpawnedPlanetMultiplier = parseFloat(e.target.value);
+            this.sizeOfSpawnedPlanetValue.textContent = this.sizeOfSpawnedPlanetMultiplier.toFixed(1) + 'x';
+        });
+
+        // Size of already existing solar system planets
         this.planetSizeSlider = document.getElementById('planetSizeSlider');
-        this.sizeOfPlanetValue = document.getElementById('sizeOfPlanet');
+        this.sizeOfPlanet = document.getElementById('sizeOfPlanet');
 
         this.planetSizeSlider.addEventListener('input', e => {
-            this.sizeOfPlanetsMultiplier = parseFloat(e.target.value);
-            this.sizeOfPlanetValue.textContent = this.sizeOfPlanetsMultiplier.toFixed(1) + 'x';
-    })
+            this.sizeOfPlanetsMultipler = parseFloat(e.target.value);
+            this.sizeOfPlanet.textContent = this.sizeOfPlanetsMultipler.toFixed(1) + 'x';
+
+            // Change size of all planets by the multiplier
+            for (const [name, mesh] of Object.entries(this.planets)) {
+                const normalSize = this.planetData[name].size;
+                mesh.scale.set(normalSize * this.sizeOfPlanetsMultipler, normalSize * this.sizeOfPlanetsMultipler, normalSize * this.sizeOfPlanetsMultipler);
+            }
+        });
     }
 
     // Create the solar system
@@ -99,9 +117,9 @@ export default class SolarSystem {
             const div = document.createElement('div');
             div.className = 'label';
             div.textContent = name;
-            div.style.marginTop = '-1em';
+            div.style.marginTop = '1px';
             const label = new CSS2DObject(div);
-            label.position.set(0, data.size + 1, 0);
+            label.position.set(0, 2, 0);
             mesh.add(label);
 
             this.scene.add(mesh);
@@ -147,7 +165,7 @@ export default class SolarSystem {
         this.spawnedPlanets = [];
 
         // pass in this.sizeOfPlanetMultiplier as a function so it can get the current value everytime spawnPlanets is called
-        this.placeSpawnedPlanets = spawnPlanets(this.scene, this.camera, this.domElement, this.spawnedPlanets, () => this.sizeOfPlanetsMultiplier);
+        this.placeSpawnedPlanets = spawnPlanets(this.scene, this.camera, this.domElement, this.spawnedPlanets, () => this.sizeOfSpawnedPlanetMultiplier);
         this.control.addEventListener('lock', () => this.placeSpawnedPlanets.disable());
         this.control.addEventListener('unlock', () => this.placeSpawnedPlanets.enable());
 
