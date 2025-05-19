@@ -23,12 +23,25 @@ export default class SolarSystem {
         this.camera = camera;
         this.domElement = domElement;
         this.control = controls;
+        this.sizeOfPlanetsMultiplier = 1.0;
+        this._ChangeSizeOfPlanets();
         this._Initialize();
 
         this.collisionExplosion = new ParticleSystem({
             parent: this.scene,
             camera: this.camera
         });
+    }
+
+    // Thing to change the size of the spawned planets
+    _ChangeSizeOfPlanets() {
+        this.planetSizeSlider = document.getElementById('planetSizeSlider');
+        this.sizeOfPlanetValue = document.getElementById('sizeOfPlanet');
+
+        this.planetSizeSlider.addEventListener('input', e => {
+            this.sizeOfPlanetsMultiplier = parseFloat(e.target.value);
+            this.sizeOfPlanetValue.textContent = this.sizeOfPlanetsMultiplier.toFixed(1) + 'x';
+    })
     }
 
     // Create the solar system
@@ -120,7 +133,9 @@ export default class SolarSystem {
         // Store all spawned planets to be used in collisions and various other 
         // interactions
         this.spawnedPlanets = [];
-        this.placeSpawnedPlanets = spawnPlanets(this.scene, this.camera, this.domElement, this.spawnedPlanets);
+
+        // pass in this.sizeOfPlanetMultiplier as a function so it can get the current value everytime spawnPlanets is called
+        this.placeSpawnedPlanets = spawnPlanets(this.scene, this.camera, this.domElement, this.spawnedPlanets, () => this.sizeOfPlanetsMultiplier);
         this.control.addEventListener('lock', () => this.placeSpawnedPlanets.disable());
         this.control.addEventListener('unlock', () => this.placeSpawnedPlanets.enable());
 

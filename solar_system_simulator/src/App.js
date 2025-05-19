@@ -46,6 +46,7 @@ export default class App {
     this.camera.position.set(10, 100, 500);
   }
 
+  // Hud stuff
   _SetUpDomElements() {
     this.speedSlider = document.getElementById('simSpeedSlider');
     this.speedValue = document.getElementById('speedOfSim');
@@ -53,7 +54,6 @@ export default class App {
     this.speedSlider.addEventListener('input', e => {
       this.simulationSpeedMultiplier = parseFloat(e.target.value);
       this.speedValue.textContent = this.simulationSpeedMultiplier.toFixed(1) + 'x';
-      console.log(this.speedValue.textContent);
     })
   }
 

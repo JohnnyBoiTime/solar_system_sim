@@ -1,14 +1,18 @@
 import * as THREE from 'three';
 
 // Function to spawn planets in the scene
-export function spawnPlanets(scene, camera, domElement, spawnedPlanets) {
+export function spawnPlanets(scene, camera, domElement, spawnedPlanets, sizeOfPlanetMultiplier) {
+
     
     // Create ray and mouse to position where to palce planet
     const raycaster = new THREE.Raycaster();
     const mouse = new THREE.Vector2();
 
     // Position of mouse
-    const placePlanet = (e) => {
+    const placePlanet = () => {
+
+        const multiplier = sizeOfPlanetMultiplier();
+        const sizeOfPlanet = 1.0 * multiplier;
         
         // Center coordinates of mouse click on canvas
         mouse.x = (event.clientX / domElement.clientWidth) * 2 - 1;
@@ -24,9 +28,11 @@ export function spawnPlanets(scene, camera, domElement, spawnedPlanets) {
             .add(raycaster.ray.origin);
 
             // Create planet to put in position of coordinates from above
-            const geometry = new THREE.SphereGeometry(1, 16, 16);
+            const geometry = new THREE.SphereGeometry(sizeOfPlanet, 16, 16);
             const material = new THREE.MeshStandardMaterial({ color: 0xff0000});
             const body = new THREE.Mesh(geometry, material);
+
+            console.log(sizeOfPlanet);
 
             // Add it to the scene
             body.position.copy(placementOfPlanet);
