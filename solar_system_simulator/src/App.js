@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import SolarSystem from './SolarSystem.js';
 import Controls from './Controls.js';
+import { CSS2DRenderer, CSS2DObject } from 'three/examples/jsm/renderers/CSS2DRenderer.js';
 import { PointerLockControls } from 'three/examples/jsm/controls/PointerLockControls.js';
 
 export default class App {
@@ -29,14 +30,24 @@ export default class App {
     this.clock = new THREE.Clock();
   }
 
-  // Basic three.js render setup
+  // Renderers
   _SetupRenderer() {
+    
+    // Three.js renderer
     this.renderer = new THREE.WebGLRenderer({ antialias: true });
     this.renderer.setSize(window.innerWidth, window.innerHeight);
     this.renderer.outputEncoding = THREE.sRGBEncoding;
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
     this.renderer.toneMappingExposure = 0.25;
     document.body.appendChild(this.renderer.domElement);
+
+    // Laben renderer, to label things!
+    this.labelRenderer = new CSS2DRenderer();
+    this.labelRenderer.setSize(window.innerWidth, window.innerHeight);
+    this.labelRenderer.domElement.style.position = 'absolute';
+    this.labelRenderer.domElement.style.top = '0px';
+    this.labelRenderer.domElement.style.pointerEvents = 'none';
+    document.body.appendChild(this.labelRenderer.domElement);
   }
 
   // Basic camera setup
@@ -73,9 +84,10 @@ export default class App {
     document.addEventListener('keyup',   (e) => this.inputController.handleKeyUp(e));
     window.addEventListener('resize', () => {
       const width = window.innerWidth, height = window.innerHeight;
-      this.renderer.setSize(width, height);
       this.camera.aspect = width / height;
       this.camera.updateProjectionMatrix();
+      this.renderer.setSize(width, height);
+      this.labelRenderer.setSize(width, height);
     })
   }
 
@@ -94,6 +106,7 @@ export default class App {
     this.solarSystem.update(simulationSpeed);
 
     this.renderer.render(this.scene, this.camera);
+    this.labelRenderer.render(this.scene, this.camera);
 
     requestAnimationFrame(() => this._Animate());
   }

@@ -14,6 +14,7 @@ import { createOrbitPathsOfPlanets } from './planets/orbitsOfPlanets';
 import { spawnPlanets } from './features/placePlanet';
 import ParticleSystem from './features/ParticleSystem';
 import { handleCollisions } from './features/collisions';
+import { CSS2DObject } from 'three/examples/jsm/renderers/CSS2DRenderer.js';
 
 export default class SolarSystem {
 
@@ -88,12 +89,24 @@ export default class SolarSystem {
                 neptune: createNeptune
             }[name];
 
+            // Create visual for planet 
             const mesh = createPlanets();
             mesh.scale.set(data.size, data.size, data.size);
             mesh.castShadow = true;
             mesh.recieveShadow = true;
+
+            // Label that follows the planets around
+            const div = document.createElement('div');
+            div.className = 'label';
+            div.textContent = name;
+            div.style.marginTop = '-1em';
+            const label = new CSS2DObject(div);
+            label.position.set(0, data.size + 1, 0);
+            mesh.add(label);
+
             this.scene.add(mesh);
             this.planets[name] = mesh;
+
         }
 
         // Build the orbit array
@@ -101,7 +114,7 @@ export default class SolarSystem {
         for (const [name, data] of Object.entries(this.planetData)) {
 
             // Formula for accurate orbits
-            const bAxis = data.distance * Math.sqrt(1 - data.eccentricity * data.eccentricity);
+            const bAxis = data.distance * Math.sqrt(1 - (data.eccentricity * data.eccentricity));
             const orbitalPath = new THREE.EllipseCurve(
                 -data.distance * data.eccentricity, 0,
                 data.distance, bAxis, 0, 2 * Math.PI, 
@@ -111,11 +124,10 @@ export default class SolarSystem {
             const orbitLine = createOrbitPathsOfPlanets(
                 data.distance,
                 data.eccentricity,
-                256,
+                128,
                 0x8888ff
             );
 
-            orbitLine.rotation.x = THREE.MathUtils.degToRad(data.inclination);
             orbitLine.rotation.y = THREE.MathUtils.degToRad(data.perhelion);
             orbitLine.position.copy(this.sun.position);
             this.scene.add(orbitLine);
