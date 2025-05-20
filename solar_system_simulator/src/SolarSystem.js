@@ -205,7 +205,6 @@ export default class SolarSystem {
               if (bullet.bulletMesh.position.distanceTo(otherShip.ship.position) < 10.0) {
 
                     // Remove bullet and ship
-                    this.scene.remove(bullet.bulletMesh);
                     ship.destroyedShip();
               }
             }

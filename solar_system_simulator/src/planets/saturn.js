@@ -23,7 +23,7 @@ export function createSaturn() {
 
     const planetMesh = new THREE.Mesh(planet, sphereMaterial);
 
-    const rings = new THREE.RingGeometry(1.2, 1.5, 32);
+    const rings = new THREE.RingGeometry(1.2, 3, 32);
 
     const loadRingTexture = new THREE.TextureLoader();
     const ringsTexture = loadRingTexture.load(ringTexture);
@@ -36,7 +36,7 @@ export function createSaturn() {
     });
 
     const ringMesh = new THREE.Mesh(rings, ringMaterial);
-    ringMesh.rotation.x = -Math.PI / 2; // Rotate the rings to be flat
+    ringMesh.rotation.x = -Math.PI / 2.5; // Rotate the rings to be flat
     ringMaterial.side = THREE.DoubleSide; // Make the rings visible from both sides
 
     saturn.planet = planetMesh;
