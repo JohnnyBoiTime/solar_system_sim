@@ -168,10 +168,11 @@ export default class SolarSystem {
         this.spawnedPlanets = [];
         this.spawnedShips = [];
 
+        // Place ships or planets
         this.placeSpawnedPlanets = spawnPlanets(this.scene, this.camera, this.domElement, this.spawnedPlanets, () => this.sizeOfSpawnedPlanetMultiplier);
-
         this.placeSpawnedShips = spawnShips(this.scene, this.camera, this.domElement, this.spawnedShips, SpaceShip);
 
+        // Switch between placing ships or placing planets
         document.addEventListener('keydown', e => {
             switch(e.code) {
                 case 'KeyB':
@@ -192,16 +193,20 @@ export default class SolarSystem {
         this.sun.rotation.y += 0.01;
 
 
-        // 1) Update each ship (they’ll aim + fire at each other)
+        // Have ships update one at a time
         this.spawnedShips.forEach(ship => ship.update(delta, this.spawnedShips));
 
-        // 2) Collision check: bullets vs ships
+        // Collision detection
         for (const ship of this.spawnedShips) {
-          for (const other of this.spawnedShips) {
-            if (ship === other) continue;
+          for (const otherShip of this.spawnedShips) {
+            if (ship === otherShip) continue; // skip if ship collides with itself
+            // Check if bullet collided with a ship
             for (const bullet of ship.bullets) {
-              if (bullet.bulletMesh.position.distanceTo(other.ship.position) < 1.0) {
-                    console.log(stuff);
+              if (bullet.bulletMesh.position.distanceTo(otherShip.ship.position) < 10.0) {
+
+                    // Remove bullet and ship
+                    this.scene.remove(bullet.bulletMesh);
+                    ship.destroyedShip();
               }
             }
           }

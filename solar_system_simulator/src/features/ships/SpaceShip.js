@@ -4,9 +4,9 @@ import Bullet from './Bullet';
 export default class SpaceShip {
     constructor(scene, position = new THREE.Vector3(), color = 0x888ff) {
         this.scene = scene;
-
+        this.alive = true;
         // Create the ship
-        const hull = new THREE.ConeGeometry(1, 2, 8);
+        const hull = new THREE.ConeGeometry(10, 20, 8);
         const paintJob = new THREE.MeshStandardMaterial({ color });
         this.ship = new THREE.Mesh(hull, paintJob);
         this.ship.position.copy(position);
@@ -40,6 +40,7 @@ export default class SpaceShip {
         return closest;
     }
 
+    // Shoot in the direction of the ship
     _Shoot(direction) {
         const cannon = this.ship.position.clone().add(direction.clone().multiplyScalar(1.5));
         const bullet = new Bullet(cannon, direction, 300);
@@ -47,17 +48,31 @@ export default class SpaceShip {
         this.bullets.push(bullet);
     }
 
+    // Destroy the ship when it gets hit
+    destroyedShip() {
+        this.alive = false;
+        this.scene.remove(this.ship);
+    }
+
+    
     update(delta, allShips) {
+        if (!this.alive) return; // If ship is destroyed, the current instance of the ship does nothing
         const targetShip = this._FindNearestShip(allShips);
+
+        // Retarget to other ships
         if(targetShip) {
             const pointAtShip = targetShip.ship.position.clone().sub(this.ship.position).normalize();
             this.ship.lookAt(targetShip.ship.position);
 
+            // Cooldown firerate
             this.coolDown -= delta;
             if (this.coolDown <= 0) {
                 this._Shoot(pointAtShip);
                 this.coolDown = this.fireRate;
             }
         }
+
+        // Update bullet shot position
+        this.bullets.forEach(bullet => bullet.update(delta));
     }
 }

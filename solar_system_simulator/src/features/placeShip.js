@@ -21,7 +21,7 @@ export function spawnShips(scene, camera, domElement, spawnedShips, SpaceShip) {
         // Compute point 10 units away from where we clicked
         const placementOfShip = new THREE.Vector3()
             .copy(raycaster.ray.direction)
-            .multiplyScalar(10)
+            .multiplyScalar(1000)
             .add(raycaster.ray.origin);
 
 
