@@ -1,0 +1,39 @@
+import * as THREE from 'three';
+
+// Function to spawn planets in the scene
+export function spawnShips(scene, camera, domElement, spawnedShips, SpaceShip) {
+
+    
+    // Create ray and mouse to position where to palce planet
+    const raycaster = new THREE.Raycaster();
+    const mouse = new THREE.Vector2();
+
+    // Position of mouse
+    const placeShip = () => {
+        
+        // Center coordinates of mouse click on canvas
+        mouse.x = (event.clientX / domElement.clientWidth) * 2 - 1;
+        mouse.y = -(event.clientY / domElement.clientHeight) * 2 + 1;
+
+        // Put rays where we click
+        raycaster.setFromCamera(mouse, camera);
+
+        // Compute point 10 units away from where we clicked
+        const placementOfShip = new THREE.Vector3()
+            .copy(raycaster.ray.direction)
+            .multiplyScalar(10)
+            .add(raycaster.ray.origin);
+
+
+        const newShip = new SpaceShip(scene, placementOfShip, 0xffffff)
+            
+            // Keep track of all spawned planets
+            spawnedShips.push(newShip);  
+    };
+
+    return {
+        enable: () => domElement.addEventListener('mousedown', placeShip),
+        disable: () => domElement.removeEventListener('mousedown', placeShip)
+    };
+
+}

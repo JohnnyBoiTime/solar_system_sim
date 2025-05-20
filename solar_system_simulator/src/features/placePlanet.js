@@ -50,8 +50,6 @@ export function spawnPlanets(scene, camera, domElement, spawnedPlanets, sizeOfPl
             spawnedPlanets.push(planetAttributes);  
     };
 
-    domElement.addEventListener('mousedown', placePlanet);
-
     return {
         enable: () => domElement.addEventListener('mousedown', placePlanet),
         disable: () => domElement.removeEventListener('mousedown', placePlanet)

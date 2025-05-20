@@ -13,6 +13,8 @@ import { createNeptune } from './planets/neptune';
 import { createOrbitPathsOfPlanets } from './planets/orbitsOfPlanets';
 import { spawnPlanets } from './features/placePlanet';
 import ParticleSystem from './features/ParticleSystem';
+import SpaceShip from './features/ships/SpaceShip';
+import { spawnShips } from './features/placeShip';
 import { handleCollisions } from './features/collisions';
 import { CSS2DObject } from 'three/examples/jsm/renderers/CSS2DRenderer.js';
 
@@ -24,6 +26,7 @@ export default class SolarSystem {
         this.camera = camera;
         this.domElement = domElement;
         this.control = controls;
+        this.battleMode = false;
         this.sizeOfSpawnedPlanetMultiplier = 1.0;
         this.sizeOfPlanetsMultipler = 1.0;
         this._ChangeSizeOfPlanets();
@@ -127,7 +130,7 @@ export default class SolarSystem {
 
         }
 
-        // Build the orbit array
+        // Build the visuals for the planets orbits
         this.orbits = [];
         for (const [name, data] of Object.entries(this.planetData)) {
 
@@ -160,36 +163,65 @@ export default class SolarSystem {
             });
         }
 
-        // Store all spawned planets to be used in collisions and various other 
+            // Store all spawned planets to be used in collisions and various other 
         // interactions
         this.spawnedPlanets = [];
+        this.spawnedShips = [];
 
-        // pass in this.sizeOfPlanetMultiplier as a function so it can get the current value everytime spawnPlanets is called
         this.placeSpawnedPlanets = spawnPlanets(this.scene, this.camera, this.domElement, this.spawnedPlanets, () => this.sizeOfSpawnedPlanetMultiplier);
-        this.control.addEventListener('lock', () => this.placeSpawnedPlanets.disable());
-        this.control.addEventListener('unlock', () => this.placeSpawnedPlanets.enable());
 
+        this.placeSpawnedShips = spawnShips(this.scene, this.camera, this.domElement, this.spawnedShips, SpaceShip);
+
+        document.addEventListener('keydown', e => {
+            switch(e.code) {
+                case 'KeyB':
+                    this.placeSpawnedShips.enable();
+                    this.placeSpawnedPlanets.disable();
+                    break;
+                case 'KeyP':
+                    this.placeSpawnedPlanets.enable();
+                    this.placeSpawnedShips.disable();
+                    break;
+                    }
+                });
+    }  
     
-    }    
-        update(delta) {
+    // Update loop for the solar system
+    update(delta) {
+        this.sun.rotation.x += 0.01;
+        this.sun.rotation.y += 0.01;
 
-            this.sun.rotation.x += 0.01;
-            this.sun.rotation.y += 0.01;
 
-            // Draw the orbit of the planets
-            for (const orbit of this.orbits) {
-                orbit.phase = (orbit.phase + orbit.speed * delta) % 1;
-                const points2D = orbit.orbitalPath.getPoint(orbit.phase);
-                const points3D = new THREE.Vector3(points2D.x, 0, points2D.y)
-                    .applyAxisAngle(new THREE.Vector3(1, 0, 0), orbit.inclination)
-                    .applyAxisAngle(new THREE.Vector3(0, 1, 0), orbit.perhelion)
-                    .add(this.sun.position);
-                orbit.mesh.position.copy(points3D);
+        // 1) Update each ship (they’ll aim + fire at each other)
+        this.spawnedShips.forEach(ship => ship.update(delta, this.spawnedShips));
+
+        // 2) Collision check: bullets vs ships
+        for (const ship of this.spawnedShips) {
+          for (const other of this.spawnedShips) {
+            if (ship === other) continue;
+            for (const bullet of ship.bullets) {
+              if (bullet.bulletMesh.position.distanceTo(other.ship.position) < 1.0) {
+                    console.log(stuff);
+              }
             }
-
-            // Gravity and collision
-            gravitationalPull(this.spawnedPlanets, delta);
-            handleCollisions(this.scene, this.camera, this.spawnedPlanets, this.collisionExplosion);
-            this.collisionExplosion.step(delta);
+          }
         }
+
+
+        // Draw the orbit of the planets
+        for (const orbit of this.orbits) {
+            orbit.phase = (orbit.phase + orbit.speed * delta) % 1;
+            const points2D = orbit.orbitalPath.getPoint(orbit.phase);
+            const points3D = new THREE.Vector3(points2D.x, 0, points2D.y)
+                .applyAxisAngle(new THREE.Vector3(1, 0, 0), orbit.inclination)
+                .applyAxisAngle(new THREE.Vector3(0, 1, 0), orbit.perhelion)
+                .add(this.sun.position);
+            orbit.mesh.position.copy(points3D);
+        }   
+
+        // Gravity and collision
+        gravitationalPull(this.spawnedPlanets, delta);
+        handleCollisions(this.scene, this.camera, this.spawnedPlanets, this.collisionExplosion);
+        this.collisionExplosion.step(delta);
+    }
 }

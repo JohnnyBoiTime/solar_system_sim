@@ -15,6 +15,9 @@ export default class App {
     // Create the scene 
     this.scene = new THREE.Scene();
 
+    // red = x, green = y, blue = = z
+    this.scene.add(new THREE.AxesHelper(1000))
+
     // Set up the render, camera, and scene
     this._SetupRenderer();
 
@@ -24,7 +27,7 @@ export default class App {
 
     // Create the solar system and controls to navigate around it
     this.solarSystem = new SolarSystem(this.scene, this.camera, this.renderer.domElement, this.controls);
-    this.inputController = new Controls(this.controls);
+    this.inputController = new Controls(this.controls, this.camera);
 
     // Simulation time
     this.clock = new THREE.Clock();
@@ -104,7 +107,7 @@ export default class App {
 
     const simulationSpeed = actualTime * this.simulationSpeedMultiplier;
 
-    this.inputController.update(delta);
+    this.inputController.update(delta, this.camera);
     this.solarSystem.update(simulationSpeed);
 
     this.renderer.render(this.scene, this.camera);
