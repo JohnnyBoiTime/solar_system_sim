@@ -29,6 +29,7 @@ export default class Controls {
     // Pressing down moves camera
     handleKeyDown(event) {
         switch(event.code) {
+            // Placing planet mode
             case 'KeyP':
                 this.battleMode = false;
                 this.camera.position.set(10, 100, 500);
@@ -40,6 +41,7 @@ export default class Controls {
                     this.controls.lock();
                 }
             break;
+            // Battle mode to simulate space battles
             case 'KeyB':
                 if (this.controls.isLocked) {
                     this.controls.unlock();

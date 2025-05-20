@@ -1,17 +1,28 @@
 import * as THREE from 'three';
 import Bullet from './Bullet';
+import starShip from '../../models/super_starfury.glb';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
 export default class SpaceShip {
     constructor(scene, position = new THREE.Vector3(), color = 0x888ff) {
+        this.ship = null;
+        this.isLoaded = false;
         this.scene = scene;
         this.alive = true;
-        // Create the ship
-        const hull = new THREE.ConeGeometry(10, 20, 8);
-        const paintJob = new THREE.MeshStandardMaterial({ color });
-        this.ship = new THREE.Mesh(hull, paintJob);
-        this.ship.position.copy(position);
-        this.ship.rotation.x = Math.PI / 2;
-        scene.add(this.ship);
+
+        // Load ship from the texture
+        const modelLoader = new GLTFLoader();
+
+        modelLoader.load(
+            starShip,
+            (glb) => {
+                this.ship = glb.scene;
+                this.isLoaded = true;
+                this.ship.scale.set(0.1, 0.1, 0.1);
+                this.ship.position.copy(position);
+                scene.add(this.ship);
+            }
+        )
 
         // How fast the ship shoots
         this.fireRate = 0.5;
@@ -31,6 +42,7 @@ export default class SpaceShip {
         // Go through each spaceship and determine which ship is the closest to the current ship
         for (const oneShip of allShips) {
             if (oneShip === this) continue;
+            if (!oneShip.ship) continue;
             const distanceToOtherShip = oneShip.ship.position.distanceToSquared(this.ship.position);
             if (distanceToOtherShip < closestDistanceSquared) {
                 closestDistanceSquared = distanceToOtherShip;
@@ -56,7 +68,7 @@ export default class SpaceShip {
 
     
     update(delta, allShips) {
-        if (!this.alive) return; // If ship is destroyed, the current instance of the ship does nothing
+        if (!this.alive || !this.isLoaded) return; // If ship is destroyed, the current instance of the ship does nothing
         const targetShip = this._FindNearestShip(allShips);
 
         // Retarget to other ships
