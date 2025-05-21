@@ -199,13 +199,13 @@ export default class SolarSystem {
         // Collision detection
         for (const ship of this.spawnedShips) {
           for (const otherShip of this.spawnedShips) {
+            if (otherShip.ship === null) continue; // Skip all dead ships
             if (ship === otherShip) continue; // skip if ship collides with itself
             // Check if bullet collided with a ship
             for (const bullet of ship.bullets) {
-              if (bullet.bulletMesh.position.distanceTo(otherShip.ship.position) < 10.0) {
-
+              if (bullet.bulletMesh.position.distanceTo(otherShip.ship.position) < 0.1) {
                     // Remove bullet and ship
-                    ship.destroyedShip();
+                    otherShip.destroyedShip();
               }
             }
           }

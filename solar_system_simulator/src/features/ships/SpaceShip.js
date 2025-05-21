@@ -36,7 +36,7 @@ export default class SpaceShip {
     _FindNearestShip(allShips) {
 
         // Set everything to a changable value
-        let closest = null;
+        let closest = 0;
         let closestDistanceSquared = Infinity;
 
         // Go through each spaceship and determine which ship is the closest to the current ship
