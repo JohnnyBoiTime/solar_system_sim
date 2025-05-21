@@ -195,6 +195,18 @@ export default class SolarSystem {
 
         // Have ships update one at a time
         this.spawnedShips.forEach(ship => ship.update(delta, this.spawnedShips));
+        this.spawnedShips.forEach(s => {
+            if (s.ship === null) return;
+
+            // Label that follows the planets around
+            const div = document.createElement('div');
+            div.className = 'label';
+            div.textContent = "Cruiser";
+            div.style.marginTop = '1px';
+            const label = new CSS2DObject(div);
+            label.position.set(0, 10, 0);
+            s.ship.add(label);
+            });
 
         // Collision detection
         for (const ship of this.spawnedShips) {

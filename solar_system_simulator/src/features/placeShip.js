@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { CSS2DObject } from 'three/examples/jsm/renderers/CSS2DRenderer.js';
 
 // Function to spawn planets in the scene
 export function spawnShips(scene, camera, domElement, spawnedShips, SpaceShip) {
@@ -24,11 +25,10 @@ export function spawnShips(scene, camera, domElement, spawnedShips, SpaceShip) {
             .multiplyScalar(1000)
             .add(raycaster.ray.origin);
 
-
-        const newShip = new SpaceShip(scene, placementOfShip, 0xffffff)
+        const newShip = new SpaceShip(scene, placementOfShip, 0xffffff);
             
             // Keep track of all spawned planets
-            spawnedShips.push(newShip);  
+            spawnedShips.push(newShip); 
     };
 
     return {
