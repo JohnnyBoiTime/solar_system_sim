@@ -1,35 +1,35 @@
 import * as THREE from 'three';
 import Bullet from './Bullet';
-import starShip from '../../models/super_starfury.glb';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
 export default class SpaceShip {
-    constructor(scene, position = new THREE.Vector3(), color = 0x888ff) {
+    constructor(scene, position = new THREE.Vector3(), {model, scale = 0.1,}) {
         this.ship = null;
+        this.coolDown = 0;
+        this.fireRate = 0;
         this.isLoaded = false;
         this.scene = scene;
         this.alive = true;
+        // The bullets it has fired
+        this.bullets = [];
 
         // Load ship from the texture
         const modelLoader = new GLTFLoader();
 
-        modelLoader.load(
-            starShip,
+        // Promise to ensure ship is fully loaded
+        this.modelLoaderPromise = new Promise(resolve => {
+            modelLoader.load(
+            model,
             (glb) => {
-                this.ship = glb.scene;
+            this.ship = glb.scene;
                 this.isLoaded = true;
-                this.ship.scale.set(0.1, 0.1, 0.1);
+                this.ship.scale.set(scale, scale, scale);
                 this.ship.position.copy(position);
                 scene.add(this.ship);
-            }
-        )
-
-        // How fast the ship shoots
-        this.fireRate = 0.5;
-        this.coolDown = 0;
-
-        // The bullets it has fired
-        this.bullets = [];
+                resolve(this);
+            });
+        });
+       
     }
 
     // Method to find the nearest ship

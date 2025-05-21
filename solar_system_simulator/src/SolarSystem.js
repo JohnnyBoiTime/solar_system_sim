@@ -13,7 +13,8 @@ import { createNeptune } from './planets/neptune';
 import { createOrbitPathsOfPlanets } from './planets/orbitsOfPlanets';
 import { spawnPlanets } from './features/placePlanet';
 import ParticleSystem from './features/ParticleSystem';
-import SpaceShip from './features/ships/SpaceShip';
+import Cruiser from './features/ships/shipTypes/Cruiser';
+import Fighter from './features/ships/shipTypes/Fighter'; 
 import { spawnShips } from './features/placeShip';
 import { handleCollisions } from './features/collisions';
 import { CSS2DObject } from 'three/examples/jsm/renderers/CSS2DRenderer.js';
@@ -29,6 +30,7 @@ export default class SolarSystem {
         this.battleMode = false;
         this.sizeOfSpawnedPlanetMultiplier = 1.0;
         this.sizeOfPlanetsMultipler = 1.0;
+        this.name = "name";
         this._ChangeSizeOfPlanets();
         this._Initialize();
 
@@ -167,10 +169,35 @@ export default class SolarSystem {
         // interactions
         this.spawnedPlanets = [];
         this.spawnedShips = [];
+        this.shipTypes = [Fighter, Cruiser];
+        
+
+        document.addEventListener('keydown', e => {
+
+            const indexForShip = parseInt(e.key, 10);
+            this.chosenShip = Fighter;
+
+            switch(indexForShip) {
+                case 1:
+                   this.chosenShip = this.shipTypes[0];
+                   this.name = "Fighter";
+                   console.log(this.chosenShip);
+                   console.log(this.name);
+                   break;
+                case 2: 
+                    this.chosenShip = this.shipTypes[1];
+                    this.name = "Cruiser";
+                    console.log(this.chosenShip);
+                    break;
+                default:
+                    this.chosenShip = this.shipTypes[0];
+                    break;
+                }
+            });
 
         // Place ships or planets
         this.placeSpawnedPlanets = spawnPlanets(this.scene, this.camera, this.domElement, this.spawnedPlanets, () => this.sizeOfSpawnedPlanetMultiplier);
-        this.placeSpawnedShips = spawnShips(this.scene, this.camera, this.domElement, this.spawnedShips, SpaceShip);
+        this.placeSpawnedShips = spawnShips(this.scene, this.camera, this.domElement, this.spawnedShips, () => this.chosenShip, () => this.name);
 
         // Switch between placing ships or placing planets
         document.addEventListener('keydown', e => {
@@ -194,19 +221,27 @@ export default class SolarSystem {
 
 
         // Have ships update one at a time
-        this.spawnedShips.forEach(ship => ship.update(delta, this.spawnedShips));
-        this.spawnedShips.forEach(s => {
-            if (s.ship === null) return;
-
-            // Label that follows the planets around
-            const div = document.createElement('div');
-            div.className = 'label';
-            div.textContent = "Cruiser";
-            div.style.marginTop = '1px';
-            const label = new CSS2DObject(div);
-            label.position.set(0, 10, 0);
-            s.ship.add(label);
+        this.spawnedShips.forEach(ship => {
+            if (typeof ship.update !== 'function') {
+                return;
+            }
+                
+            ship.update(delta, this.spawnedShips);
             });
+
+            /*
+             this.spawnedShips.forEach(s => {
+                if (s.ship === null) return;
+
+                // Label that follows the planets around
+                const div = document.createElement('div');
+                div.className = 'label';
+                div.textContent = this.name;
+                div.style.marginTop = '1px';
+                const label = new CSS2DObject(div);
+                label.position.set(0, 10, 0);
+                s.ship.add(label);
+            });  */
 
         // Collision detection
         for (const ship of this.spawnedShips) {

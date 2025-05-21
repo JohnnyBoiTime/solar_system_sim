@@ -2,15 +2,19 @@ import * as THREE from 'three';
 import { CSS2DObject } from 'three/examples/jsm/renderers/CSS2DRenderer.js';
 
 // Function to spawn planets in the scene
-export function spawnShips(scene, camera, domElement, spawnedShips, SpaceShip) {
+export function spawnShips(scene, camera, domElement, spawnedShips, SpaceShip, nameOfShip) {
 
     
     // Create ray and mouse to position where to palce planet
     const raycaster = new THREE.Raycaster();
     const mouse = new THREE.Vector2();
 
+
     // Position of mouse
     const placeShip = () => {
+
+        // Register ship name at click  time
+        const shipName = nameOfShip();
         
         // Center coordinates of mouse click on canvas
         mouse.x = (event.clientX / domElement.clientWidth) * 2 - 1;
@@ -25,11 +29,28 @@ export function spawnShips(scene, camera, domElement, spawnedShips, SpaceShip) {
             .multiplyScalar(1000)
             .add(raycaster.ray.origin);
 
-        const newShip = new SpaceShip(scene, placementOfShip, 0xffffff);
-            
-            // Keep track of all spawned planets
+            // Set the ship type
+            const ShipType = SpaceShip();
+            const newShip = new ShipType(scene, placementOfShip, {model: SpaceShip.shipModel, scale: SpaceShip.shipScale})
+
+
+            // Label that follows the planets around
+            const div = document.createElement('div');
+            div.className = 'label';
+            div.textContent = shipName;
+            div.style.marginTop = '1px';
+            const label = new CSS2DObject(div);
+            label.position.set(0, 10, 0);
+
+            // Track all spawned ships
             spawnedShips.push(newShip); 
-    };
+
+            // Make sure ship is fully loaded before adding the label
+            newShip.modelLoaderPromise.then(shipInstance => {
+                shipInstance.ship.add(label);
+            })
+           
+    };1
 
     return {
         enable: () => domElement.addEventListener('mousedown', placeShip),
