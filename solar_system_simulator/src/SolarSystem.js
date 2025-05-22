@@ -15,6 +15,8 @@ import { spawnPlanets } from './features/placePlanet';
 import ParticleSystem from './features/ParticleSystem';
 import Cruiser from './features/ships/shipTypes/Cruiser';
 import Fighter from './features/ships/shipTypes/Fighter'; 
+import Bullet from './features/ships/ammoTypes/Bullet';
+import Missile from './features/ships/ammoTypes/Missiles';
 import { spawnShips } from './features/placeShip';
 import { handleCollisions } from './features/collisions';
 import { CSS2DObject } from 'three/examples/jsm/renderers/CSS2DRenderer.js';
@@ -165,39 +167,41 @@ export default class SolarSystem {
             });
         }
 
-            // Store all spawned planets to be used in collisions and various other 
+        // Store all spawned planets to be used in collisions and various other 
         // interactions
         this.spawnedPlanets = [];
         this.spawnedShips = [];
         this.shipTypes = [Fighter, Cruiser];
+        this.ammoTypes = [Bullet, Missile];
         
 
         document.addEventListener('keydown', e => {
 
             const indexForShip = parseInt(e.key, 10);
             this.chosenShip = Fighter;
+            this.chosenAmmo = Bullet;
 
             switch(indexForShip) {
                 case 1:
                    this.chosenShip = this.shipTypes[0];
+                   this.chosenAmmo = this.ammoTypes[0];
                    this.name = "Fighter";
-                   console.log(this.chosenShip);
-                   console.log(this.name);
                    break;
                 case 2: 
                     this.chosenShip = this.shipTypes[1];
+                    this.chosenAmmo = this.ammoTypes[1];
                     this.name = "Cruiser";
-                    console.log(this.chosenShip);
                     break;
                 default:
                     this.chosenShip = this.shipTypes[0];
+                    this.chosenAmmo = this.ammoTypes[0];
                     break;
                 }
             });
 
         // Place ships or planets
         this.placeSpawnedPlanets = spawnPlanets(this.scene, this.camera, this.domElement, this.spawnedPlanets, () => this.sizeOfSpawnedPlanetMultiplier);
-        this.placeSpawnedShips = spawnShips(this.scene, this.camera, this.domElement, this.spawnedShips, () => this.chosenShip, () => this.name);
+        this.placeSpawnedShips = spawnShips(this.scene, this.camera, this.domElement, this.spawnedShips, () => this.chosenShip, () => this.chosenAmmo, () => this.name);
 
         // Switch between placing ships or placing planets
         document.addEventListener('keydown', e => {
@@ -248,9 +252,10 @@ export default class SolarSystem {
           for (const otherShip of this.spawnedShips) {
             if (otherShip.ship === null) continue; // Skip all dead ships
             if (ship === otherShip) continue; // skip if ship collides with itself
+            if (!ship.bullets.ammo) continue; // Skip no ammo
             // Check if bullet collided with a ship
             for (const bullet of ship.bullets) {
-              if (bullet.bulletMesh.position.distanceTo(otherShip.ship.position) < 0.1) {
+              if (bullet.ammo.position.distanceTo(otherShip.ship.position) < 0.1) {
                     // Remove bullet and ship
                     otherShip.destroyedShip();
               }

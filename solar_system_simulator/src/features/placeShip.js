@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { CSS2DObject } from 'three/examples/jsm/renderers/CSS2DRenderer.js';
 
 // Function to spawn planets in the scene
-export function spawnShips(scene, camera, domElement, spawnedShips, SpaceShip, nameOfShip) {
+export function spawnShips(scene, camera, domElement, spawnedShips, SpaceShip, ammoType, nameOfShip) {
 
     
     // Create ray and mouse to position where to palce planet
@@ -15,6 +15,7 @@ export function spawnShips(scene, camera, domElement, spawnedShips, SpaceShip, n
 
         // Register ship name at click  time
         const shipName = nameOfShip();
+        const ammo = ammoType();
         
         // Center coordinates of mouse click on canvas
         mouse.x = (event.clientX / domElement.clientWidth) * 2 - 1;
@@ -31,7 +32,8 @@ export function spawnShips(scene, camera, domElement, spawnedShips, SpaceShip, n
 
             // Set the ship type
             const ShipType = SpaceShip();
-            const newShip = new ShipType(scene, placementOfShip, {model: SpaceShip.shipModel, scale: SpaceShip.shipScale})
+            const newShip = new ShipType(scene, placementOfShip, {model: SpaceShip.shipModel, scale: SpaceShip.shipScale, Ammunition: ammo})
+            console.log(newShip);
 
 
             // Label that follows the planets around

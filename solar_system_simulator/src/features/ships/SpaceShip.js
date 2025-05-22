@@ -1,15 +1,17 @@
 import * as THREE from 'three';
-import Bullet from './Bullet';
+import Ammunition from './Ammunition';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
 export default class SpaceShip {
-    constructor(scene, position = new THREE.Vector3(), {model, scale = 0.1,}) {
+    constructor(scene, position = new THREE.Vector3(), {model, scale = 0.1, ammunition = Ammunition} = {}) {
         this.ship = null;
         this.coolDown = 0;
         this.fireRate = 0;
         this.isLoaded = false;
         this.scene = scene;
+        this.ammunition = ammunition;
         this.alive = true;
+        
         // The bullets it has fired
         this.bullets = [];
 
@@ -21,7 +23,7 @@ export default class SpaceShip {
             modelLoader.load(
             model,
             (glb) => {
-            this.ship = glb.scene;
+                this.ship = glb.scene;
                 this.isLoaded = true;
                 this.ship.scale.set(scale, scale, scale);
                 this.ship.position.copy(position);
@@ -55,8 +57,17 @@ export default class SpaceShip {
     // Shoot in the direction of the ship
     _Shoot(direction) {
         const cannon = this.ship.position.clone().add(direction.clone().multiplyScalar(1.5));
-        const bullet = new Bullet(cannon, direction, 300);
-        this.scene.add(bullet.bulletMesh);
+        const speed = 100;
+        const damage = 1;
+        const ammo = this.ammunition;
+        const bullet = new ammo(this.scene, cannon, direction, speed, damage, { 
+                        model: ammo.ammoModel,
+                        scale: ammo.ammoScale});
+
+        bullet.modelLoaderPromise.then(() => {
+        this.scene.add(bullet.ammo);
+            
+        })
         this.bullets.push(bullet);
     }
 

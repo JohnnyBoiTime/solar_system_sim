@@ -1,18 +1,18 @@
 import CruiserModel from '../../../models/cruiser.glb';
+import Missile from '../ammoTypes/Missiles';
 import SpaceShip from '../SpaceShip';
 
 export default class Cruiser extends SpaceShip {
 
     static shipModel = CruiserModel;
     static shipScale = 0.1;
+    static ammunition = Missile;    
 
     constructor (scene, position) {
-        const model = Cruiser.shipModel;
-        const scale = Cruiser.shipScale;
-
         super( scene, position, {
-            model,
-            scale,
+            model: Cruiser.shipModel,
+            scale: Cruiser.shipScale,
+            ammunition: Cruiser.ammunition
         });
 
         // Override the fire rate and cooldown of SpaceShip
