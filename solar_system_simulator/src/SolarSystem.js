@@ -250,12 +250,16 @@ export default class SolarSystem {
         // Collision detection
         for (const ship of this.spawnedShips) {
           for (const otherShip of this.spawnedShips) {
-            if (otherShip.ship === null) continue; // Skip all dead ships
+            if (!otherShip.isLoaded || !otherShip.ship) continue;
             if (ship === otherShip) continue; // skip if ship collides with itself
-            if (!ship.bullets.ammo) continue; // Skip no ammo
+            if (!ship.bullets.length) continue; // Skip no ammo
             // Check if bullet collided with a ship
             for (const bullet of ship.bullets) {
-              if (bullet.ammo.position.distanceTo(otherShip.ship.position) < 0.1) {
+                const bp = bullet.position;                   // or bullet.ammo.position
+                const sp = otherShip.ship.position;           // the real Three.js position
+                console.log('dist =', bp.distanceTo(sp));
+              if (bullet.position.distanceTo(otherShip.ship.position) < 10) {
+                console.log(otherShip.ship.position);
                     // Remove bullet and ship
                     otherShip.destroyedShip();
               }
@@ -277,7 +281,7 @@ export default class SolarSystem {
 
         // Gravity and collision
         gravitationalPull(this.spawnedPlanets, delta);
-        handleCollisions(this.scene, this.camera, this.spawnedPlanets, this.collisionExplosion);
+        handleCollisions(this.scene, this.spawnedPlanets, this.collisionExplosion);
         this.collisionExplosion.step(delta);
     }
 }

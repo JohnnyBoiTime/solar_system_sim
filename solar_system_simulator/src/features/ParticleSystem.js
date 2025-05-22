@@ -146,7 +146,7 @@ export default class ParticleSystem {
     
     }
 
-    _AddParticles(origin = new THREE.Vector3(0, 0, 0)) {
+    addParticles(origin = new THREE.Vector3(0, 0, 0)) {
         for (let i = 0; i < 10; i++) {
             const newParticle = {
                 position: origin.clone().add(new THREE.Vector3(

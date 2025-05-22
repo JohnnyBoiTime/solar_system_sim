@@ -7,6 +7,7 @@ export default class SpaceShip {
         this.ship = null;
         this.coolDown = 0;
         this.fireRate = 0;
+        this.position = position.clone();
         this.isLoaded = false;
         this.scene = scene;
         this.ammunition = ammunition;
@@ -43,6 +44,7 @@ export default class SpaceShip {
 
         // Go through each spaceship and determine which ship is the closest to the current ship
         for (const oneShip of allShips) {
+            if (!oneShip.alive) continue; // Skip dead ships
             if (oneShip === this) continue;
             if (!oneShip.ship) continue;
             const distanceToOtherShip = oneShip.ship.position.distanceToSquared(this.ship.position);

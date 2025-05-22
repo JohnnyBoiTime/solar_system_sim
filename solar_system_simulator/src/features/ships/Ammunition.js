@@ -3,7 +3,7 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
 // Ammunition blueprint for types of projectiles the ships shoot
 export default class Ammunition {
-    constructor(scene, position, direction, speed = 200, damage = 1.0, 
+    constructor(scene, position, direction, speed = {}, damage = 1.0, 
         {model = this.constructor.model, 
         scale = this.constructor.scale}) {
 
@@ -11,6 +11,7 @@ export default class Ammunition {
         this.scene = scene;
         this.ammo = null;
         this.isLoaded = false;
+        this.position = position.clone();
         this.speed = speed;
         this.damage = damage;
         this.velocity = direction.clone().normalize().multiplyScalar(speed);
@@ -30,7 +31,7 @@ export default class Ammunition {
                 const forwardDirection = new THREE.Vector3(0, 0, 1);
                 const q = new THREE.Quaternion().setFromUnitVectors(forwardDirection, normDirection);
 
-                
+
                 this.ammo.quaternion.copy(q);
                 this.isLoaded = true;
                 this.ammo.scale.set(scale, scale, scale);
@@ -47,5 +48,6 @@ export default class Ammunition {
     update(delta) {
         if (!this.isLoaded || !this.ammo) return;
         this.ammo.position.addScaledVector(this.velocity, delta);
+        this.position.copy(this.ammo.position);
     }
 }

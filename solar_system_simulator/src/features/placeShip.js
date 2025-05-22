@@ -33,8 +33,6 @@ export function spawnShips(scene, camera, domElement, spawnedShips, SpaceShip, a
             // Set the ship type
             const ShipType = SpaceShip();
             const newShip = new ShipType(scene, placementOfShip, {model: SpaceShip.shipModel, scale: SpaceShip.shipScale, Ammunition: ammo})
-            console.log(newShip);
-
 
             // Label that follows the planets around
             const div = document.createElement('div');

@@ -1,13 +1,10 @@
 import * as THREE from 'three';
 
 
-export function handleCollisions(scene, camera, planets, collisionExplosion) {
+export function handleCollisions(scene, planets, collisionExplosion) {
 
     // Amount of planets currently spawned in
     const numOfPlanets = planets.length;
-
-    // Get all the planets that are still intact and have not collided with another
-    const intactPlanets = planets.filter(planet => planet.alive);
 
     // Go through each planet and compare with another planet
     for (let i = 0; i < numOfPlanets; i++) {
@@ -40,7 +37,7 @@ export function handleCollisions(scene, camera, planets, collisionExplosion) {
 
                 // Only plays animations on planets that are alive
                 if (planet1.alive == true && planet2.alive == true && planet1.mass > 0.00001 && planet2.mass > 0.00001) {                    
-                    collisionExplosion._AddParticles(midPointOfPlanets);
+                    collisionExplosion.addParticles(midPointOfPlanets);
                     scene.remove(planet1.body);
                     scene.remove(planet2.body);
                     planet1.alive = false;
