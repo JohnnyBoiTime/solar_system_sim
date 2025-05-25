@@ -4,7 +4,7 @@ import Ammunition from '../Ammunition';
 // Missile Class
 export default class Drone extends Ammunition {
         static ammoModel = DroneModel;
-        static ammoScale = 1.0;
+        static ammoScale = 10;
 
 
         // Override ammunition

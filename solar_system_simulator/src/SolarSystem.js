@@ -15,8 +15,10 @@ import { spawnPlanets } from './features/placePlanet';
 import ParticleSystem from './features/ParticleSystem';
 import Cruiser from './features/ships/shipTypes/Cruiser';
 import Fighter from './features/ships/shipTypes/Fighter'; 
+import Carrier from './features/ships/shipTypes/Carrier';
 import Bullet from './features/ships/ammoTypes/Bullet';
 import Missile from './features/ships/ammoTypes/Missiles';
+import Drone from './features/ships/ammoTypes/Drones';
 import { spawnShips } from './features/placeShip';
 import { handleCollisions } from './features/collisions';
 import { CSS2DObject } from 'three/examples/jsm/renderers/CSS2DRenderer.js';
@@ -171,10 +173,11 @@ export default class SolarSystem {
         // interactions
         this.spawnedPlanets = [];
         this.spawnedShips = [];
-        this.shipTypes = [Fighter, Cruiser];
-        this.ammoTypes = [Bullet, Missile];
+        this.shipTypes = [Fighter, Cruiser, Carrier];
+        this.ammoTypes = [Bullet, Missile, Drone];
         
 
+        // Change ship to what you want
         document.addEventListener('keydown', e => {
 
             const indexForShip = parseInt(e.key, 10);
@@ -191,6 +194,11 @@ export default class SolarSystem {
                     this.chosenShip = this.shipTypes[1];
                     this.chosenAmmo = this.ammoTypes[1];
                     this.name = "Cruiser";
+                    break;
+                case 3:
+                    this.chosenShip = this.shipTypes[2];
+                    this.chosenAmmo = this.ammoTypes[2];
+                    this.name = "Carrier";
                     break;
                 default:
                     this.chosenShip = this.shipTypes[0];
@@ -255,9 +263,6 @@ export default class SolarSystem {
             if (!ship.bullets.length) continue; // Skip no ammo
             // Check if bullet collided with a ship
             for (const bullet of ship.bullets) {
-                const bp = bullet.position;                   // or bullet.ammo.position
-                const sp = otherShip.ship.position;           // the real Three.js position
-                console.log('dist =', bp.distanceTo(sp));
               if (bullet.position.distanceTo(otherShip.ship.position) < 10) {
                 console.log(otherShip.ship.position);
                     // Remove bullet and ship

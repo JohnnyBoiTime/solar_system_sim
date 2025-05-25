@@ -6,7 +6,7 @@ import SpaceShip from '../SpaceShip';
 export default class Carrier extends SpaceShip {
 
     static shipModel = CarrierModel;
-    static shipScale = 0.1;
+    static shipScale = 20;
     static ammunition = Drone;    
 
     constructor (scene, position) {
