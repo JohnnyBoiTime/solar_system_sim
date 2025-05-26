@@ -3,10 +3,13 @@ import Ammunition from './Ammunition';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
 export default class SpaceShip {
-    constructor(scene, position = new THREE.Vector3(), {model, scale = 0.1, ammunition = Ammunition} = {}) {
+    constructor(scene, position = new THREE.Vector3(), 
+        {model, scale = 0.1, ammunition = Ammunition, firedAmount, bulletArc } = {}) {
         this.ship = null;
         this.coolDown = 0;
         this.fireRate = 0;
+        this.fired = firedAmount;
+        this.arc = bulletArc;
         this.position = position.clone();
         this.isLoaded = false;
         this.scene = scene;
@@ -53,6 +56,8 @@ export default class SpaceShip {
                 closest = oneShip;
             }
         }
+
+        // Return closest ship to current ship to attack
         return closest;
     }
 
@@ -65,7 +70,7 @@ export default class SpaceShip {
         const bullet = new ammo(this.scene, cannon, direction, speed, damage, { 
                         model: ammo.ammoModel,
                         scale: ammo.ammoScale});
-
+        console.log("Fired");
         bullet.modelLoaderPromise.then(() => {
         this.scene.add(bullet.ammo);
             
@@ -87,13 +92,22 @@ export default class SpaceShip {
         // Retarget to other ships
         if(targetShip) {
             const pointAtShip = targetShip.ship.position.clone().sub(this.ship.position).normalize();
+
             this.ship.lookAt(targetShip.ship.position);
 
             // Cooldown firerate
             this.coolDown -= delta;
             if (this.coolDown <= 0) {
-                this._Shoot(pointAtShip);
-                this.coolDown = this.fireRate;
+
+                // How many should be fired in one volley
+                for (let i = 0; i < this.fired; i++) {
+                    
+                    // Controls spread of the bullets fired
+                    const randomX = ((Math.random() * 2) - 1) * this.arc;
+                    const spread = new THREE.Vector3(pointAtShip.x + randomX, pointAtShip.y,  pointAtShip.z);
+                    this._Shoot(spread);
+                    this.coolDown = this.fireRate;
+                }
             }
         }
 

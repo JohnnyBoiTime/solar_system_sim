@@ -5,6 +5,8 @@ import SpaceShip from '../SpaceShip';
 export default class Fighter extends SpaceShip {
     static shipModel = FighterModel;
     static shipScale = 2.0;
+    static bulletsPerShot = 3; 
+    static spread = 0.1;
     static ammunition = Bullet;
 
     constructor (scene, position) {
@@ -12,7 +14,9 @@ export default class Fighter extends SpaceShip {
         super( scene, position, {
             model: Fighter.shipModel,
             scale: Fighter.shipScale,
-            ammunition: Fighter.ammunition
+            ammunition: Fighter.ammunition,
+            firedAmount: Fighter.bulletsPerShot,
+            bulletArc: Fighter.spread
         });
 
         // Override the fire rate and cooldown of SpaceShip

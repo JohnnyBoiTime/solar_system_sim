@@ -203,6 +203,7 @@ export default class SolarSystem {
                 default:
                     this.chosenShip = this.shipTypes[0];
                     this.chosenAmmo = this.ammoTypes[0];
+                    this.name = "Fighter";
                     break;
                 }
             });
