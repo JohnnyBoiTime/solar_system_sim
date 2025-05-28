@@ -1,8 +1,9 @@
 import DroneModel from '../../../models/drones.glb'
-import Ammunition from '../Ammunition';
+import SpaceShip from '../SpaceShip';
+import Bullet from './Bullet';
 
-// Missile Class
-export default class Drone extends Ammunition {
+// Drone class
+export default class Drone extends  SpaceShip{
         static ammoModel = DroneModel;
         static ammoScale = 10;
 
