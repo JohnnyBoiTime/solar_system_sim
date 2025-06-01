@@ -2,6 +2,17 @@ import * as THREE from 'three';
 import Ammunition from './Ammunition';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
+
+/**
+ * @param {THREE.Scene} scene The main scene for the ship to be added/visible in
+ * @param {THREE.Vector3} position Spawn point of the ship
+ * @param {object} ship Ship attributes
+ * @param {string} ship.model 3D model for the ship 
+ * @param {number} ship.scale How big the ship is in space
+ * @param {object} ship.ammunition What the ship fires
+ * @param {number} ship.firedAmount How many of the ammunition is fired
+ * @param {number} ship.bulletArc Spread of the fired ammunition
+ */
 export default class SpaceShip {
     constructor(scene, position = new THREE.Vector3(), 
         {model, scale = 0.1, ammunition = Ammunition, firedAmount, bulletArc } = {}) {
