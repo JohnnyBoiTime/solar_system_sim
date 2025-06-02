@@ -1,3 +1,4 @@
+import * as THREE from 'three';
 import CarrierModel from '../../../models/carrier.glb';
 import Drone from '../ammoTypes/Drones';
 import SpaceShip from '../SpaceShip';
@@ -7,21 +8,33 @@ export default class Carrier extends SpaceShip {
 
     static shipModel = CarrierModel;
     static shipScale = 20;
-    static spray = 0.2; 
-    static spread = 0.1;
-    static ammunition = Drone;    
 
     constructor (scene, position) {
         super( scene, position, {
             model: Carrier.shipModel,
             scale: Carrier.shipScale,
-            ammunition: Carrier.ammunition,
-            firedAmount: Carrier.spray,
-            bulletArc: Carrier.spread
         });
 
         // Override the fire rate and cooldown of SpaceShip
-        this.fireRate = 0.5;
-        this.coolDown = 0;
+        this.fireRate = 5;
+        this.coolDown = 5;
+    }
+
+    update(delta, allShips) {
+        super.update(delta, allShips); // Carrier acts like a regular ship
+
+        this.coolDown -= delta;
+
+        if (this.coolDown <= 0) {
+            const target = this._FindNearestShip(allShips);
+            if (target) {
+                const directionOfShip = this.ship.getWorldDirection(new THREE.Vector3());
+                const spawnDrone = this.ship.position.clone().add(directionOfShip.multiplyScalar(this.ship.scale.x * 2));
+
+                const drone = new Drone(this.scene, spawnDrone, target);
+                allShips.push(drone);
+            }
+            this.coolDown = this.fireRate;
+        }
     }
 }

@@ -30,9 +30,9 @@ export default class Ammunition {
                 const normDirection = direction.clone().normalize();
                 const forwardDirection = new THREE.Vector3(0, 0, 1);
                 const q = new THREE.Quaternion().setFromUnitVectors(forwardDirection, normDirection);
-
-
                 this.ammo.quaternion.copy(q);
+
+                // Loaded and ready to set
                 this.isLoaded = true;
                 this.ammo.scale.set(scale, scale, scale);
                 this.ammo.position.copy(position);
