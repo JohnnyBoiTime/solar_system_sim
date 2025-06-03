@@ -30,7 +30,6 @@ export default class Drone extends SpaceShip {
                this.fireRate = 0.5;
                this.coolDown = 0;
                this.travelingToTarget = true;
-               this.attack = false;
                this.travelSpeed = 800;
             }    
 
@@ -53,7 +52,7 @@ export default class Drone extends SpaceShip {
                     const targetsPosition = this.targetShip.ship.position;
 
                     // Drone is traveling to the target
-                    if (this.travelingToTarget === true && this.attack === false) {
+                    if (this.travelingToTarget === true) {
                         const distanceToTarget = targetsPosition.clone().sub(this.ship.position);
                         const distanceLeftToTravel = distanceToTarget.length();
                         
@@ -69,7 +68,6 @@ export default class Drone extends SpaceShip {
                         // Closed in on the target!
                         else {
                             this.travelingToTarget = false; // Reached the target
-                            this.attack = true;
 
                             // Set angle from where the drone approaches the ship
                             const orbiter = this.ship.position.clone().sub(targetsPosition).setY(0);
