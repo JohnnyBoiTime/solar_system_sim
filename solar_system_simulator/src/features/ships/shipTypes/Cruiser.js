@@ -20,7 +20,7 @@ export default class Cruiser extends SpaceShip {
         });
 
         // Override the fire rate and cooldown of SpaceShip
-        this.fireRate = 0.5;
+        this.fireRate = 100;
         this.coolDown = 0;
     }
 }

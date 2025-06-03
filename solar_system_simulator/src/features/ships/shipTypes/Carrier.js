@@ -17,7 +17,7 @@ export default class Carrier extends SpaceShip {
 
         // Override the fire rate and cooldown of SpaceShip
         this.fireRate = 5;
-        this.coolDown = 5;
+        this.coolDown = 1;
     }
 
     update(delta, allShips) {
