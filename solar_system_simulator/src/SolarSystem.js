@@ -44,7 +44,7 @@ export default class SolarSystem {
         });
     }
 
-    // Thing to change the size of the spawned planets
+    // Thing to change the size of the spawned planets and solar system stuff
     _ChangeSizeOfPlanets() {
         
         // Size of planets that are spawned
@@ -181,8 +181,17 @@ export default class SolarSystem {
         document.addEventListener('keydown', e => {
 
             const indexForShip = parseInt(e.key, 10);
+
+            // Makes it so if wasd keys are pressed or otherwise, it
+            // does not change the current chosen ship
+            if (![1,2,3].includes(indexForShip)) {
+                return;
+            }
+
+            // Stuff for ship selection
             this.chosenShip = Fighter;
             this.chosenAmmo = Bullet;
+            this.currentShip = document.getElementById('shipSelected');
 
             switch(indexForShip) {
                 case 1:
@@ -200,12 +209,9 @@ export default class SolarSystem {
                     this.chosenAmmo = this.ammoTypes[2];
                     this.name = "Carrier";
                     break;
-                default:
-                    this.chosenShip = this.shipTypes[0];
-                    this.chosenAmmo = this.ammoTypes[0];
-                    this.name = "Fighter";
-                    break;
                 }
+
+                this.currentShip.textContent = this.name;
             });
 
         // Place ships or planets

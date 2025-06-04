@@ -25,11 +25,13 @@ export default class Carrier extends SpaceShip {
 
         this.coolDown -= delta;
 
+
+        // Send out a drone
         if (this.coolDown <= 0) {
             const target = this._FindNearestShip(allShips);
             if (target) {
                 const directionOfShip = this.ship.getWorldDirection(new THREE.Vector3());
-                const spawnDrone = this.ship.position.clone().add(directionOfShip.multiplyScalar(this.ship.scale.x * 2));
+                const spawnDrone = this.ship.position.clone().add(directionOfShip.multiplyScalar(this.ship.scale.x * 15));
 
                 const drone = new Drone(this.scene, spawnDrone, target);
                 allShips.push(drone);
