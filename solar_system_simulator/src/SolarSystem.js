@@ -38,6 +38,7 @@ export default class SolarSystem {
         this._ChangeSizeOfPlanets();
         this._Initialize();
 
+        // Particles!
         this.collisionExplosion = new ParticleSystem({
             parent: this.scene,
             camera: this.camera
@@ -188,7 +189,7 @@ export default class SolarSystem {
                 return;
             }
 
-            // Stuff for ship selection
+            // Stuff for ship selections
             this.chosenShip = Fighter;
             this.chosenAmmo = Bullet;
             this.currentShip = document.getElementById('shipSelected');
