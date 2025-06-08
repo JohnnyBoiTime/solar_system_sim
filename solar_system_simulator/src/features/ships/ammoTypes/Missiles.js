@@ -5,7 +5,7 @@ import Ammunition from '../Ammunition';
 export default class Missile extends Ammunition {
         static ammoModel = MissileModel;
         static ammoScale = 20.0;
-
+        static ammoDamage = 50; 
 
         // Override ammunition
         constructor(scene, position, direction, speed, damage ) {
@@ -14,7 +14,7 @@ export default class Missile extends Ammunition {
         const scale = Missile.ammoScale;
         const speedOfAmmo = 1000;
 
-        super( scene, position, direction, speed = speedOfAmmo, damage, {
+        super( scene, position, direction, speed = speedOfAmmo, damage = ammoDamage, {
             model,
             scale
         });

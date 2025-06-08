@@ -9,16 +9,18 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
  * @param {object} ship Ship attributes
  * @param {string} ship.model 3D model for the ship 
  * @param {number} ship.scale How big the ship is in space
+ * @param {number} ship.health How much health the ship has
  * @param {object} ship.ammunition What the ship fires
  * @param {number} ship.firedAmount How many of the ammunition is fired
  * @param {number} ship.bulletArc Spread of the fired ammunition
  */
 export default class SpaceShip {
     constructor(scene, position = new THREE.Vector3(), 
-        {model, scale = 0.1, ammunition = Ammunition, firedAmount, bulletArc } = {}) {
+        {model, scale = 0.1, health, ammunition = Ammunition, firedAmount, bulletArc } = {}) {
         this.ship = null;
         this.coolDown = 0;
         this.fireRate = 0;
+        this.health = health;
         this.fired = firedAmount;
         this.arc = bulletArc;
         this.position = position.clone();

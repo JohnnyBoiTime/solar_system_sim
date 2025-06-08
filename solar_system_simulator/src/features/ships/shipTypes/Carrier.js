@@ -8,10 +8,12 @@ export default class Carrier extends SpaceShip {
 
     static shipModel = CarrierModel;
     static shipScale = 20;
+    static shipHealth = 1000;
 
     constructor (scene, position) {
         super( scene, position, {
             model: Carrier.shipModel,
+            health: Carrier.shipHealth,
             scale: Carrier.shipScale,
         });
 

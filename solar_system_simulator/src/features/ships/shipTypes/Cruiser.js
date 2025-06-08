@@ -6,6 +6,7 @@ export default class Cruiser extends SpaceShip {
 
     static shipModel = CruiserModel;
     static shipScale = 0.1;
+    static shipHealth = 200;
     static spray = 3; // Amont the ship type fires at once
     static spread = 0.3
     static ammunition = Missile;    
@@ -14,6 +15,7 @@ export default class Cruiser extends SpaceShip {
         super( scene, position, {
             model: Cruiser.shipModel,
             scale: Cruiser.shipScale,
+            health: Cruiser.shipHealth,
             ammunition: Cruiser.ammunition,
             firedAmount: Cruiser.spray,
             bulletArc: Cruiser.spread
