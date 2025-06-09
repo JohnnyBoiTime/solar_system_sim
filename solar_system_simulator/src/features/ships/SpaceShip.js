@@ -20,9 +20,10 @@ export default class SpaceShip {
         this.ship = null;
         this.coolDown = 0;
         this.fireRate = 0;
-        this.health = health;
         this.fired = firedAmount;
         this.arc = bulletArc;
+        this.maxHealth = health;
+        this.currentHealth = health
         this.position = position.clone();
         this.isLoaded = false;
         this.scene = scene;
@@ -49,6 +50,14 @@ export default class SpaceShip {
             });
         });
        
+    }
+
+    _HealthBar() {
+
+    }
+
+    _UpdateHealthBar() {
+        
     }
 
     // Method to find the nearest ship

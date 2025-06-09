@@ -192,6 +192,7 @@ export default class SolarSystem {
             // Stuff for ship selections
             this.chosenShip = Fighter;
             this.chosenAmmo = Bullet;
+            this.shipHealth = 0;
             this.currentShip = document.getElementById('shipSelected');
 
             switch(indexForShip) {
@@ -199,16 +200,19 @@ export default class SolarSystem {
                    this.chosenShip = this.shipTypes[0];
                    this.chosenAmmo = this.ammoTypes[0];
                    this.name = "Fighter";
+                   this.shipHealth = 50;
                    break;
                 case 2: 
                     this.chosenShip = this.shipTypes[1];
                     this.chosenAmmo = this.ammoTypes[1];
                     this.name = "Cruiser";
+                    this.shipHealth = 100;
                     break;
                 case 3:
                     this.chosenShip = this.shipTypes[2];
                     this.chosenAmmo = this.ammoTypes[2];
                     this.name = "Carrier";
+                    this.shipHealth = 300;
                     break;
                 }
 
@@ -216,8 +220,12 @@ export default class SolarSystem {
             });
 
         // Place ships or planets
-        this.placeSpawnedPlanets = spawnPlanets(this.scene, this.camera, this.domElement, this.spawnedPlanets, () => this.sizeOfSpawnedPlanetMultiplier);
-        this.placeSpawnedShips = spawnShips(this.scene, this.camera, this.domElement, this.spawnedShips, () => this.chosenShip, () => this.chosenAmmo, () => this.name);
+        this.placeSpawnedPlanets = spawnPlanets(this.scene, this.camera, this.domElement, 
+            this.spawnedPlanets, () => this.sizeOfSpawnedPlanetMultiplier);
+
+        this.placeSpawnedShips = spawnShips(this.scene, this.camera, this.domElement, 
+            this.spawnedShips, () => this.chosenShip, () => this.chosenAmmo, 
+            () => this.shipHealth, () => this.name);
 
         // Switch between placing ships or placing planets
         document.addEventListener('keydown', e => {

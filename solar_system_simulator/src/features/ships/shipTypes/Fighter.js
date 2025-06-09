@@ -5,7 +5,6 @@ import SpaceShip from '../SpaceShip';
 export default class Fighter extends SpaceShip {
     static shipModel = FighterModel;
     static shipScale = 2.0;
-    static shipHealth = 100;
     static bulletsPerShot = 3; 
     static spread = 0.1;
     static ammunition = Bullet;

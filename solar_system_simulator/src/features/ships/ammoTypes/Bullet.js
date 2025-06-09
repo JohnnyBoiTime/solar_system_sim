@@ -14,6 +14,7 @@ export default class Bullet extends Ammunition {
 
             const model = Bullet.ammoModel;
             const scale = Bullet.ammoScale;
+            const damage = Bullet.ammoDamage;
 
             super( scene, position, direction, speed, damage, {
                 model,
