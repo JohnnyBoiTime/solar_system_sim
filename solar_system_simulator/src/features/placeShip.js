@@ -16,7 +16,7 @@ export function spawnShips(scene, camera, domElement, spawnedShips, SpaceShip, a
         // Register ship name at click  time
         const shipName = nameOfShip();
         const ammo = ammoType();
-        const health = shipHealth();
+        const healthBar = shipHealth();
         
         // Center coordinates of mouse click on canvas
         mouse.x = (event.clientX / domElement.clientWidth) * 2 - 1;
@@ -33,7 +33,8 @@ export function spawnShips(scene, camera, domElement, spawnedShips, SpaceShip, a
 
             // Set the ship type
             const ShipType = SpaceShip();
-            const newShip = new ShipType(scene, placementOfShip, {model: SpaceShip.shipModel, scale: SpaceShip.shipScale, Ammunition: ammo})
+            const newShip = new ShipType(scene, placementOfShip, {model: SpaceShip.shipModel, scale: SpaceShip.shipScale, 
+                health: healthBar ,Ammunition: ammo})
 
             // Label that follows the planets around
             const div = document.createElement('div');

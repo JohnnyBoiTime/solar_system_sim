@@ -192,7 +192,7 @@ export default class SolarSystem {
             // Stuff for ship selections
             this.chosenShip = Fighter;
             this.chosenAmmo = Bullet;
-            this.shipHealth = 0;
+            this.shipHealth = 50;
             this.currentShip = document.getElementById('shipSelected');
 
             switch(indexForShip) {

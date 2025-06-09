@@ -11,7 +11,6 @@ export default class Missile extends Ammunition {
 
         const model = Missile.ammoModel;
         const scale = Missile.ammoScale;
-        const damage = Missile.ammoDamage;
         const speedOfAmmo = 1000;
 
         super( scene, position, direction, speed = speedOfAmmo, damage, {
