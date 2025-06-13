@@ -62,7 +62,6 @@ export default class Drone extends SpaceShip {
                             const move = distanceToTarget.normalize();
                             const distanceMoved = move.clone().multiplyScalar(this.travelSpeed * delta);
                             this.ship.position.add(distanceMoved);
-                            console.log("Closing in, currently: ", distanceLeftToTravel);
                         } 
 
                         // Closed in on the target!

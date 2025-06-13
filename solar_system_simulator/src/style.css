@@ -65,6 +65,27 @@ h1 {
   z-index: 10;
 }
 
+.healthBar {
+  appearance: none;
+  border: none;
+  background: none;
+
+  width: 80px;
+  height: 6px;
+  margin: 2px 0 0 0;
+  pointer-events: none;
+}
+
+.healthBar::-webkit-progress-bar {
+  background-color: red;
+  border-radius: 3px;
+}
+
+.healthBar::-webkit-progress-value {
+  background-color: green;
+  border-radius: 3px;
+}
+
 .logo {
   height: 6em;
   padding: 1.5em;

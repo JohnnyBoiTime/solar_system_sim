@@ -14,7 +14,6 @@ export default class Fighter extends SpaceShip {
         super( scene, position, {
             model: Fighter.shipModel,
             scale: Fighter.shipScale,
-            health: 100,
             ammunition: Fighter.ammunition,
             firedAmount: Fighter.bulletsPerShot,
             bulletArc: Fighter.spread

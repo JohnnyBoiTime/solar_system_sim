@@ -14,7 +14,6 @@ export default class Cruiser extends SpaceShip {
         super( scene, position, {
             model: Cruiser.shipModel,
             scale: Cruiser.shipScale,
-            health: 100,
             ammunition: Cruiser.ammunition,
             firedAmount: Cruiser.spray,
             bulletArc: Cruiser.spread

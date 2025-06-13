@@ -17,6 +17,7 @@ export function spawnShips(scene, camera, domElement, spawnedShips, SpaceShip, a
         const shipName = nameOfShip();
         const ammo = ammoType();
         const healthBar = shipHealth();
+        const currentHealth = 150;
         
         // Center coordinates of mouse click on canvas
         mouse.x = (event.clientX / domElement.clientWidth) * 2 - 1;
@@ -34,9 +35,9 @@ export function spawnShips(scene, camera, domElement, spawnedShips, SpaceShip, a
             // Set the ship type
             const ShipType = SpaceShip();
             const newShip = new ShipType(scene, placementOfShip, {model: SpaceShip.shipModel, scale: SpaceShip.shipScale, 
-                health: healthBar ,Ammunition: ammo})
+                 Ammunition: ammo})
 
-            // Label that follows the planets around
+            // Label for the name of the ship spawned
             const div = document.createElement('div');
             div.className = 'label';
             div.textContent = shipName;
@@ -44,15 +45,25 @@ export function spawnShips(scene, camera, domElement, spawnedShips, SpaceShip, a
             const label = new CSS2DObject(div);
             label.position.set(0, 10, 0);
 
+            const healthBarSlider = document.createElement('progress');
+            healthBarSlider.type = 'range';
+            healthBarSlider.min = 0;
+            healthBarSlider.max = String(healthBar);
+            healthBarSlider.value = String(currentHealth);
+            healthBarSlider.className = 'healthBar';
+            const healthBarLabel = new CSS2DObject(healthBarSlider);
+            healthBarLabel.position.set(0, 9, 0);
+
             // Track all spawned ships
             spawnedShips.push(newShip); 
 
             // Make sure ship is fully loaded before adding the label
             newShip.modelLoaderPromise.then(shipInstance => {
                 shipInstance.ship.add(label);
+                shipInstance.ship.add(healthBarLabel);
             })
            
-    };1
+    };
 
     return {
         enable: () => domElement.addEventListener('mousedown', placeShip),

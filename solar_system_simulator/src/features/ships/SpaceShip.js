@@ -16,15 +16,13 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
  */
 export default class SpaceShip {
     constructor(scene, position = new THREE.Vector3(), 
-        {model, scale, health, ammunition = Ammunition, firedAmount, bulletArc } = {}) {
+        {model, scale, ammunition = Ammunition, firedAmount, bulletArc } = {}) {
         this.ship = null;
         this.scale = scale;
         this.coolDown = 0;
         this.fireRate = 0;
         this.fired = firedAmount;
         this.arc = bulletArc;
-        this.maxHealth = health;
-        this.currentHealth = health
         this.position = position.clone();
         this.isLoaded = false;
         this.scene = scene;
@@ -47,50 +45,13 @@ export default class SpaceShip {
                 this.ship.position.copy(position);
                 scene.add(this.ship);
                 this.isLoaded = true;
-                this._HealthBar();
                 resolve(this);
             });
         });
+
+    }
        
-    }
-
-    // Basic health bar
-    _HealthBar() {
-        const barWidth = 5, barHeight = 0.3, barDepth = 1;
-
-        // health bar background geo and material, red
-        const hbBgGeo = new THREE.BoxGeometry(barWidth, barHeight, barDepth);
-        const hbBgMat = new THREE.MeshBasicMaterial({color: 0xff0000});
-        const hbBg = new THREE.Mesh(hbBgGeo, hbBgMat);
-
-        const hbFgGep = new THREE.BoxGeometry(barWidth, barHeight, barDepth);
-        const hbFgMat = new THREE.MeshBasicMaterial({color: 0x00ff00});
-        const hbFg = new THREE.Mesh(hbFgGep, hbFgMat);
-
-        // Create healthbar with background and foreground
-        const healthBar = new THREE.Group();
-        healthBar.add(hbBg, hbFg)
-
-        healthBar.position.set(0, scale * 2 , 0);
-        this.ship.add(healthBar);
-   
-
-        // Healthbar itself
-        this.healthBar = {group: healthBar, fgMesh: hbFg, width: barWidth}
-
-          console.log("Healthbar created!")
-    }
-
-    _UpdateHealthBar() {
-        if (!this.healthBar) return; // No healthbar
-
-        const currentHealth = THREE.MathUtils.clamp(this.currentHealth / this.maxHealth, 0, 1);
-        const {fgMesh, width} = this.healthBar;
-
-        fgMesh.scale.x = currentHealth;
-
-        fgMesh.position.x = - (width * (1 - currentHealth)) / 2;
-    }
+    
 
     // Method to find the nearest ship
     _FindNearestShip(allShips) {
@@ -124,7 +85,6 @@ export default class SpaceShip {
         const bullet = new ammo(this.scene, cannon, direction, speed, damage, { 
                         model: ammo.ammoModel,
                         scale: ammo.ammoScale});
-        console.log("Fired");
         bullet.modelLoaderPromise.then(() => {
         this.scene.add(bullet.ammo);
             
@@ -137,7 +97,6 @@ export default class SpaceShip {
         this.alive = false;
         this.scene.remove(this.ship);
     }
-
     
     update(delta, allShips) {
         if (!this.alive || !this.isLoaded) return; // If ship is destroyed, the current instance of the ship does nothing
@@ -168,6 +127,5 @@ export default class SpaceShip {
         // Update bullet shot position
         this.bullets.forEach(bullet => bullet.update(delta));
 
-        this._UpdateHealthBar();
     }
 }

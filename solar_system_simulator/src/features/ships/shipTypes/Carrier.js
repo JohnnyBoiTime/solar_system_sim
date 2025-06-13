@@ -11,7 +11,6 @@ export default class Carrier extends SpaceShip {
 
     constructor (scene, position) {
         super( scene, position, {
-            health: 100,
             model: Carrier.shipModel,
             scale: Carrier.shipScale,
         });
