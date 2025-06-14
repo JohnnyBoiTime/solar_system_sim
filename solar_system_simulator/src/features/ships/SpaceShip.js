@@ -97,6 +97,7 @@ export default class SpaceShip {
         this.bullets.push(bullet);
     }
 
+    // Update the health bar of the ship 
     damageToShip(damage) {
         this.currentHealth = Math.max(0, this.currentHealth - damage);
 
@@ -114,7 +115,6 @@ export default class SpaceShip {
     destroyedShip() {
         this.alive = false;
         this.scene.remove(this.ship);
-        this.scene.remove(this.healthBarSlider);
     }
     
     update(delta, allShips) {

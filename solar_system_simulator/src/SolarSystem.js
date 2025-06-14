@@ -283,6 +283,7 @@ export default class SolarSystem {
                     // Bullet hit the ship, apply damage
                     otherShip.damageToShip(bullet.damage);
                     this.scene.remove(bullet.ammo)
+                    bullet.damage = 0;
               }
             }
           }

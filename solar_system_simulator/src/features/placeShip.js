@@ -16,8 +16,8 @@ export function spawnShips(scene, camera, domElement, spawnedShips, SpaceShip, a
         // Register ship name at click  time
         const shipName = nameOfShip();
         const ammo = ammoType();
+        const currentHealth = shipHealth();
         const healthBar = shipHealth();
-        const currentHealth = 150;
         
         // Center coordinates of mouse click on canvas
         mouse.x = (event.clientX / domElement.clientWidth) * 2 - 1;
