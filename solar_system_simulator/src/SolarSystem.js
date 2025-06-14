@@ -280,9 +280,9 @@ export default class SolarSystem {
             // Check if bullet collided with a ship
             for (const bullet of ship.bullets) {
               if (bullet.position.distanceTo(otherShip.ship.position) < 10) {
-                console.log(ship)
-                    // Remove bullet and ship
-                    otherShip.destroyedShip();
+                    // Bullet hit the ship, apply damage
+                    otherShip.damageToShip(bullet.damage);
+                    this.scene.remove(bullet.ammo)
               }
             }
           }

@@ -5,7 +5,8 @@ import SpaceShip from '../SpaceShip';
 export default class Fighter extends SpaceShip {
     static shipModel = FighterModel;
     static shipScale = 2.0;
-    static bulletsPerShot = 3; 
+    static bulletsPerShot = 3;
+    static shipHealth = 100; 
     static spread = 0.1;
     static ammunition = Bullet;
 
@@ -14,6 +15,7 @@ export default class Fighter extends SpaceShip {
         super( scene, position, {
             model: Fighter.shipModel,
             scale: Fighter.shipScale,
+            health: Fighter.shipHealth,
             ammunition: Fighter.ammunition,
             firedAmount: Fighter.bulletsPerShot,
             bulletArc: Fighter.spread

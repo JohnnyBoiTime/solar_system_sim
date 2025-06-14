@@ -14,6 +14,6 @@ export default class Bullet extends Ammunition {
         // Construct new ammo by ovvrriding ammunition class
         constructor(scene, position, direction) {
 
-            super( scene, position, direction);
+            super(scene, position, direction);
         }
 }

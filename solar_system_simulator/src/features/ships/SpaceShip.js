@@ -19,11 +19,13 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
  */
 export default class SpaceShip {
     constructor(scene, position = new THREE.Vector3(), 
-        {model, scale, ammunition = Ammunition, firedAmount, bulletArc } = {}) {
+        {model, scale, health, ammunition = Ammunition, firedAmount, bulletArc } = {}) {
         this.ship = null;
         this.scale = scale;
         this.coolDown = 0;
         this.fireRate = 0;
+        this.currentHealth = health;
+        this.maxHealth = health;
         this.fired = firedAmount;
         this.arc = bulletArc;
         this.position = position.clone();
@@ -95,10 +97,24 @@ export default class SpaceShip {
         this.bullets.push(bullet);
     }
 
+    damageToShip(damage) {
+        this.currentHealth = Math.max(0, this.currentHealth - damage);
+
+        if (this.healthBarSlider) {
+            this.healthBarSlider.value = String(this.currentHealth);
+            console.log("Current ship Health: ", this.currentHealth)
+        }
+
+        if (this.currentHealth <= 0) {
+            this.destroyedShip();
+        }
+    }
+
     // Destroy the ship when it gets hit
     destroyedShip() {
         this.alive = false;
         this.scene.remove(this.ship);
+        this.scene.remove(this.healthBarSlider);
     }
     
     update(delta, allShips) {

@@ -34,8 +34,8 @@ export function spawnShips(scene, camera, domElement, spawnedShips, SpaceShip, a
 
             // Set the ship type
             const ShipType = SpaceShip();
-            const newShip = new ShipType(scene, placementOfShip, {model: SpaceShip.shipModel, scale: SpaceShip.shipScale, 
-                 Ammunition: ammo})
+            const newShip = new ShipType(scene, placementOfShip, {model: SpaceShip.shipModel, scale: SpaceShip.shipScale,
+                health: currentHealth, Ammunition: ammo})
 
             // Label for the name of the ship spawned
             const div = document.createElement('div');
@@ -60,6 +60,8 @@ export function spawnShips(scene, camera, domElement, spawnedShips, SpaceShip, a
             newShip.modelLoaderPromise.then(shipInstance => {
                 shipInstance.ship.add(label);
                 shipInstance.ship.add(healthBarLabel);
+                shipInstance.healthBarSlider = healthBarSlider;
+                shipInstance.currentHealth = currentHealth;
             })
 
             // Track all spawned ships
