@@ -6,18 +6,14 @@ import Ammunition from '../Ammunition';
 export default class Bullet extends Ammunition {
 
         // Static model/scale
-        static ammoModel = BulletModel;
-        static ammoScale = 0.5;
+        static model = BulletModel;
+        static scale = 0.5;
+        static damage = 10;
+        static speed = 100;
 
         // Construct new ammo by ovvrriding ammunition class
-        constructor(scene, position, direction, speed, damage ) {
+        constructor(scene, position, direction) {
 
-            const model = Bullet.ammoModel;
-            const scale = Bullet.ammoScale;
-
-            super( scene, position, direction, speed, damage, {
-                model,
-                scale
-             });
+            super( scene, position, direction);
         }
 }

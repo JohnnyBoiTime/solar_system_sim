@@ -45,6 +45,7 @@ export function spawnShips(scene, camera, domElement, spawnedShips, SpaceShip, a
             const label = new CSS2DObject(div);
             label.position.set(0, 10, 0);
 
+            // Health bar for the specific ship
             const healthBarSlider = document.createElement('progress');
             healthBarSlider.type = 'range';
             healthBarSlider.min = 0;
@@ -54,17 +55,21 @@ export function spawnShips(scene, camera, domElement, spawnedShips, SpaceShip, a
             const healthBarLabel = new CSS2DObject(healthBarSlider);
             healthBarLabel.position.set(0, 9, 0);
 
-            // Track all spawned ships
-            spawnedShips.push(newShip); 
-
-            // Make sure ship is fully loaded before adding the label
+            // Make sure ship is fully loaded before hooking up the
+            // label and health bar to the ship
             newShip.modelLoaderPromise.then(shipInstance => {
                 shipInstance.ship.add(label);
                 shipInstance.ship.add(healthBarLabel);
             })
+
+            // Track all spawned ships
+            spawnedShips.push(newShip); 
+
+            
            
     };
 
+    // Enable or disable placing the ship
     return {
         enable: () => domElement.addEventListener('mousedown', placeShip),
         disable: () => domElement.removeEventListener('mousedown', placeShip)

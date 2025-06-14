@@ -4,6 +4,9 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
 
 /**
+ * Needs to be constructed manually to spawn a ship, so caller
+ * needs to provide the object attributes
+ * 
  * @param {THREE.Scene} scene The main scene for the ship to be added/visible in
  * @param {THREE.Vector3} position Spawn point of the ship
  * @param {object} ship Ship attributes

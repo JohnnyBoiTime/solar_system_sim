@@ -3,19 +3,14 @@ import Ammunition from '../Ammunition';
 
 // Missile Class
 export default class Missile extends Ammunition {
-        static ammoModel = MissileModel;
-        static ammoScale = 20.0;
+        static model = MissileModel;
+        static scale = 20.0;
+        static damage = 50;
+        static speed = 200;
 
         // Override ammunition
-        constructor(scene, position, direction, speed, damage ) {
+        constructor(scene, position, direction) {
 
-        const model = Missile.ammoModel;
-        const scale = Missile.ammoScale;
-        const speedOfAmmo = 1000;
-
-        super( scene, position, direction, speed = speedOfAmmo, damage, {
-            model,
-            scale
-        });
+        super( scene, position, direction);
     }
 }

@@ -1,11 +1,14 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
-// Ammunition blueprint for types of projectiles the ships shoot
+// Ammunition blueprint for types of projectiles the ships shoot, not
+// caller defined, so it is just constructed via the classes defaults
 export default class Ammunition {
-    constructor(scene, position, direction, speed = {}, damage = 1.0, 
+    constructor(scene, position, direction, 
         {model = this.constructor.model, 
-        scale = this.constructor.scale}) {
+        scale = this.constructor.scale,
+        speed = this.constructor.speed,
+        damage = this.constructor.damage} = {}) {
 
         // Set basic stuff for ammo
         this.scene = scene;
